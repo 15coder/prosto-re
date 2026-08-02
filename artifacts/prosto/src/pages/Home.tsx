@@ -98,12 +98,12 @@ export default function Home() {
   };
 
   const menuItems = [
-    { id: 1, name: "برغر بروستو", enName: "Prosto Burger", img: img3 },
-    { id: 2, name: "دجاج مقرمش", enName: "Crispy Chicken", img: img4 },
-    { id: 3, name: "شاورما", enName: "Shawarma Wrap", img: img7 },
+    { id: 1, name: "برغر", enName: "Burger", img: img3 },
+    { id: 2, name: "دبابيس دجاج مقرمشة", enName: "Crispy Chicken Skewers", img: img4 },
+    { id: 3, name: "بيتزا", enName: "Pizza", img: img7 },
     { id: 4, name: "بطاطس ذهبية", enName: "Golden Fries", img: img8 },
     { id: 5, name: "سلطة طازجة", enName: "Fresh Salad", img: img10 },
-    { id: 6, name: "مزة مشكلة", enName: "Meze Platter", img: img12 },
+    { id: 6, name: "شاورما", enName: "Shawarma", img: img12 },
   ];
 
   return (
