@@ -257,7 +257,7 @@ export default function Home() {
           >
             <motion.div variants={fadeUp} className="mb-6">
               <span className="px-5 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary font-medium tracking-widest text-xs uppercase shadow-[0_0_20px_rgba(245,200,0,0.15)] backdrop-blur-md">
-                التجربة الأقوى في المدينة
+                التجربة الأقوى في دير الزور
               </span>
             </motion.div>
 
@@ -345,7 +345,6 @@ export default function Home() {
                   تجربة
                 </motion.span>
                 <br />
-                <span className="text-2xl md:text-3xl text-white/55 font-semibold block mt-3 tracking-wide">More Than a Meal</span>
               </motion.h3>
               <p className="text-lg text-white/65 leading-relaxed">
                 نحن لا نقدم الطعام فقط، بل نقدم تجربة فريدة تداعب الحواس. دجاج مقرمش ذهبي، برغر مليء بالعصارة، وشاورما محضرة بشغف.
@@ -439,7 +438,7 @@ export default function Home() {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <MapPin className="text-primary w-5 h-5 shrink-0" />
-                <span>شارع سينما فؤاد - جانب مركز الرشيد</span>
+                <span>سوريا - دير الزور - شارع سينما فؤاد - جانب مركز الرشيد</span>
               </motion.div>
             </AnimatedSection>
           </div>
@@ -505,40 +504,88 @@ export default function Home() {
       </section>
 
       {/* ─── GALLERY ─── */}
-      <section id="gallery" className="py-24">
-        <AnimatedSection className="container px-6 mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <section id="gallery" className="py-24 relative overflow-hidden">
+        {/* Ambient glow */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          animate={{ background: [
+            "radial-gradient(ellipse at 20% 50%, rgba(245,200,0,0.05) 0%, transparent 60%)",
+            "radial-gradient(ellipse at 80% 50%, rgba(245,200,0,0.07) 0%, transparent 60%)",
+            "radial-gradient(ellipse at 20% 50%, rgba(245,200,0,0.05) 0%, transparent 60%)",
+          ]}}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <div className="container px-6 mx-auto">
+          {/* Section header */}
+          <AnimatedSection className="text-center mb-14">
+            <span className="inline-block px-5 py-1.5 rounded-full border border-primary/25 bg-primary/8 text-primary text-xs tracking-widest uppercase mb-5 backdrop-blur-sm">
+              معرض الصور
+            </span>
+            <h2 className="text-4xl md:text-6xl font-black mb-3">
+              لحظات من <span className="text-primary">بروستو</span>
+            </h2>
+            <p className="text-white/45 text-lg">كل صورة تحكي نكهة</p>
+          </AnimatedSection>
+
+          {/* Magazine-style grid */}
+          <div className="grid grid-cols-12 grid-rows-[auto] gap-3 md:gap-4">
+
+            {/* Hero tile — large left */}
             {[
-              { src: img5, span: "col-span-2 row-span-2", minH: "min-h-[280px]" },
-              { src: img6, span: "col-span-1", minH: "" },
-              { src: img9, span: "col-span-1", minH: "" },
-              { src: img18, span: "col-span-2", minH: "min-h-[180px]" },
-              { src: img11, span: "col-span-1", minH: "" },
-              { src: img14, span: "col-span-1 row-span-2", minH: "min-h-[280px]" },
-              { src: img15, span: "col-span-2", minH: "min-h-[180px]" },
-            ].map((item, i) => (
+              { src: img5,  cols: "col-span-12 md:col-span-7", rows: "row-span-2", h: "h-[340px] md:h-[520px]", label: "أجواء مميزة", i: 0 },
+              { src: img6,  cols: "col-span-6 md:col-span-5", rows: "",            h: "h-[250px] md:h-[248px]", label: "طعم لا يُنسى", i: 1 },
+              { src: img9,  cols: "col-span-6 md:col-span-5", rows: "",            h: "h-[250px] md:h-[248px]", label: "جودة عالية",   i: 2 },
+              { src: img18, cols: "col-span-12 md:col-span-4", rows: "",           h: "h-[220px] md:h-[280px]", label: "شهية مفتوحة",  i: 3 },
+              { src: img11, cols: "col-span-6 md:col-span-4",  rows: "",           h: "h-[220px] md:h-[280px]", label: "وصفات سرية",   i: 4 },
+              { src: img14, cols: "col-span-6 md:col-span-4",  rows: "",           h: "h-[220px] md:h-[280px]", label: "مكونات طازجة", i: 5 },
+              { src: img15, cols: "col-span-12 md:col-span-6", rows: "",           h: "h-[200px] md:h-[240px]", label: "نكهة فريدة",   i: 6 },
+              { src: img8,  cols: "col-span-12 md:col-span-6", rows: "",           h: "h-[200px] md:h-[240px]", label: "قرمشة ذهبية",  i: 7 },
+            ].map((item) => (
               <motion.div
-                key={i}
-                className={`${item.span} ${item.minH} rounded-2xl overflow-hidden relative group`}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.06, type: "spring", stiffness: 80 }}
-                whileHover={{ scale: 1.02, zIndex: 10 }}
+                key={item.i}
+                className={`${item.cols} ${item.rows} ${item.h} rounded-2xl overflow-hidden relative group cursor-pointer`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: item.i * 0.07, type: "spring", stiffness: 80, damping: 18 }}
+                whileHover={{ scale: 1.015, zIndex: 20 }}
+                style={{ position: "relative" }}
               >
+                {/* Photo */}
                 <img
                   src={item.src}
-                  alt="Gallery"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  alt={item.label}
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
+
+                {/* Dark vignette always */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+                {/* Yellow overlay on hover */}
                 <motion.div
-                  className="absolute inset-0 bg-primary/0 group-hover:bg-primary/15 transition-colors duration-500 mix-blend-overlay"
+                  className="absolute inset-0 bg-primary/0 group-hover:bg-primary/12 transition-colors duration-500 mix-blend-overlay"
                 />
-                <div className="absolute inset-0 rounded-2xl border border-white/0 group-hover:border-primary/30 transition-colors duration-500 pointer-events-none" />
+
+                {/* Glowing border on hover */}
+                <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-primary/50 transition-colors duration-400 pointer-events-none" />
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ boxShadow: "inset 0 0 40px rgba(245,200,0,0.12)" }} />
+
+                {/* Label revealed on hover */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-400">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-[2px] bg-primary rounded-full" />
+                    <span className="text-white font-bold text-base drop-shadow-lg">{item.label}</span>
+                  </div>
+                </div>
+
+                {/* Corner accent */}
+                <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-primary/0 group-hover:bg-primary transition-colors duration-300" />
               </motion.div>
             ))}
           </div>
-        </AnimatedSection>
+        </div>
       </section>
 
       {/* ─── DELIVERY CTA ─── */}
@@ -609,7 +656,7 @@ export default function Home() {
               </motion.div>
               <span className="text-2xl font-black text-primary mb-3 block">PROSTO | بروستو</span>
               <p className="text-white/50 mb-6 max-w-xs text-sm leading-relaxed">
-                لأن الجوع إلو بروستو! أفضل تجربة طعام سريع في المدينة.
+                لأن الجوع إلو بروستو! أفضل تجربة طعام سريع في دير الزور.
               </p>
               <div className="flex gap-3">
                 <motion.a
@@ -653,7 +700,7 @@ export default function Home() {
               <ul className="flex flex-col gap-4 text-white/50 text-sm">
                 <li className="flex items-start gap-3 justify-center md:justify-start">
                   <MapPin className="text-primary w-4 h-4 shrink-0 mt-0.5" />
-                  <span>شارع سينما فؤاد - جانب مركز الرشيد</span>
+                  <span>سوريا - دير الزور - شارع سينما فؤاد - جانب مركز الرشيد</span>
                 </li>
                 <li className="flex items-center gap-3 justify-center md:justify-start">
                   <Phone className="text-primary w-4 h-4 shrink-0" />
@@ -664,39 +711,64 @@ export default function Home() {
 
           </div>
 
-          {/* Developer credit */}
+          {/* Developer credit — prominent row */}
           <motion.div
-            className="border-t border-white/8 pt-8 flex flex-col md:flex-row items-center justify-between gap-5"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            className="border-t border-white/8 pt-10 mt-4 flex flex-col items-center gap-6"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 80, damping: 20 }}
           >
-            <p className="text-white/30 text-xs">
+            <p className="text-white/25 text-xs">
               &copy; {new Date().getFullYear()} PROSTO Restaurant. All rights reserved.
             </p>
 
-            {/* Developer badge */}
-            <motion.div
-              className="flex items-center gap-3 group"
-              whileHover={{ scale: 1.03 }}
+            {/* Developer badge — glowing card */}
+            <motion.a
+              href="https://Needaa.netlify.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-flex items-center gap-4 px-8 py-4 rounded-2xl overflow-hidden"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(245,200,0,0.2)" }}
+              whileHover={{ scale: 1.04, borderColor: "rgba(245,200,0,0.6)" }}
+              whileTap={{ scale: 0.97 }}
+              animate={{ boxShadow: [
+                "0 0 0px rgba(245,200,0,0)",
+                "0 0 24px rgba(245,200,0,0.18)",
+                "0 0 0px rgba(245,200,0,0)",
+              ]}}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             >
-              <div className="flex items-center gap-2 text-white/40 text-xs">
-                <Code2 className="w-3.5 h-3.5 text-primary/60" />
-                <span>من برمجة</span>
-                <span className="text-white/60 font-semibold">نداء الرحمن</span>
-              </div>
-              <motion.a
-                href="https://Needaa.netlify.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-primary/25 text-primary/80 hover:border-primary hover:text-primary hover:bg-primary/10 text-xs font-medium transition-all duration-200"
-                whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(245,200,0,0.2)" }}
-                whileTap={{ scale: 0.95 }}
+              {/* Animated shimmer */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/8 to-transparent -translate-x-full group-hover:translate-x-full transition-none pointer-events-none"
+                animate={{ x: ["-100%", "200%"] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.5 }}
+              />
+
+              <motion.div
+                className="relative z-10 bg-primary/15 p-2.5 rounded-xl"
+                animate={{ rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
-                <ExternalLink className="w-3 h-3" />
-                زيارة الموقع
-              </motion.a>
-            </motion.div>
+                <Code2 className="w-5 h-5 text-primary" />
+              </motion.div>
+
+              <div className="relative z-10 text-right">
+                <p className="text-white/40 text-xs mb-0.5">تصميم وبرمجة</p>
+                <p className="text-white font-black text-lg tracking-wide leading-none">
+                  نداء الرحمن
+                </p>
+              </div>
+
+              <motion.div
+                className="relative z-10 flex items-center gap-1.5 bg-primary text-black px-4 py-2 rounded-xl font-bold text-sm mr-2"
+                whileHover={{ scale: 1.08 }}
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>زيارة الموقع</span>
+              </motion.div>
+            </motion.a>
           </motion.div>
         </div>
       </footer>
