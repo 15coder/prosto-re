@@ -274,14 +274,14 @@ export default function Home() {
 
             <motion.h1
               variants={fadeUp}
-              className="text-7xl md:text-9xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-b from-primary via-yellow-400 to-amber-600 drop-shadow-[0_0_40px_rgba(245,200,0,0.4)] tracking-tighter leading-none"
+              className="text-7xl md:text-9xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-b from-primary via-yellow-400 to-amber-600 drop-shadow-[0_0_40px_rgba(245,200,0,0.4)] tracking-tighter leading-none font-display"
             >
               PROSTO
             </motion.h1>
 
             <motion.h2
               variants={fadeUp}
-              className="text-4xl md:text-6xl font-black text-white mb-6 drop-shadow-xl"
+              className="text-4xl md:text-6xl font-black text-white mb-6 drop-shadow-xl font-display"
             >
               بروستو
             </motion.h2>
@@ -335,7 +335,7 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24">
 
             <AnimatedSection className="max-w-xl text-center lg:text-right" delay={0}>
-              <motion.h3 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
+              <motion.h3 className="text-4xl md:text-5xl font-black mb-6 leading-tight font-display">
                 أكثر من وجبة —{" "}
                 <motion.span
                   className="text-primary inline-block"
@@ -423,7 +423,7 @@ export default function Home() {
                 animate={{ background: ["rgba(245,200,0,0.08)", "rgba(245,200,0,0.18)", "rgba(245,200,0,0.08)"] }}
                 transition={{ duration: 4, repeat: Infinity }}
               />
-              <h2 className="text-3xl md:text-5xl font-black mb-6 relative z-10">
+              <h2 className="text-3xl md:text-5xl font-black mb-6 relative z-10 font-display">
                 قصتنا تبدأ من <span className="text-primary">الجودة</span>
               </h2>
               <p className="text-white/65 text-lg leading-relaxed mb-5 relative z-10">
@@ -449,7 +449,7 @@ export default function Home() {
       <section id="menu" className="py-32 relative">
         <div className="container px-6 mx-auto">
           <AnimatedSection className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-black mb-4">
+            <h2 className="text-4xl md:text-6xl font-black mb-4 font-display">
               أبطال <span className="text-primary">المنيو</span>
             </h2>
             <p className="text-xl text-white/50">أطباقنا الأكثر طلباً والأشد قرمشة</p>
@@ -522,7 +522,7 @@ export default function Home() {
             <span className="inline-block px-5 py-1.5 rounded-full border border-primary/25 bg-primary/8 text-primary text-xs tracking-widest uppercase mb-5 backdrop-blur-sm">
               معرض الصور
             </span>
-            <h2 className="text-4xl md:text-6xl font-black mb-3">
+            <h2 className="text-4xl md:text-6xl font-black mb-3 font-display">
               لحظات من <span className="text-primary">بروستو</span>
             </h2>
             <p className="text-white/45 text-lg">كل صورة تحكي نكهة</p>
