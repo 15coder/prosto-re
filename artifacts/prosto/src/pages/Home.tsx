@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring } from 'framer-motion';
 import { MapPin, Phone, Instagram, Facebook, Menu, X, ArrowLeft, ExternalLink, Code2 } from 'lucide-react';
 import Stack from '@/components/Stack';
+import MapSection from '@/components/MapSection';
 
 // Images
 import logoImg from "@assets/prosto_restaurant.2026_20260802_103738_853_1785659367070.jpg";
@@ -28,6 +29,7 @@ const navLinks = [
   { name: "قصتنا", href: "#about" },
   { name: "المنيو", href: "#menu" },
   { name: "المعرض", href: "#gallery" },
+  { name: "موقعنا", href: "#location" },
 ];
 
 // Reusable animated section wrapper
@@ -639,6 +641,9 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* ─── MAP ─── */}
+      <MapSection />
 
       {/* ─── FOOTER ─── */}
       <footer className="bg-background pt-20 pb-10 border-t border-white/5">
