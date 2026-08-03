@@ -59,7 +59,6 @@ type GalleryFilter = 'all' | 'burger' | 'chicken' | 'pizza';
 
 const galleryItems: { src: string; label: string; category: GalleryFilter }[] = [
   { src: img5,  label: "أجواء مميزة",  category: "all"     },
-  { src: img3,  label: "برغر بروستو",  category: "burger"  },
   { src: img4,  label: "دجاج مقرمش",   category: "chicken" },
   { src: img6,  label: "طعم لا يُنسى", category: "all"     },
   { src: img7,  label: "بيتزا بروستو", category: "pizza"   },
