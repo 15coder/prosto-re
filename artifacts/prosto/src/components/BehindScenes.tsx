@@ -117,7 +117,7 @@ export default function BehindScenes() {
   const isTitleInView = useInView(titleRef, { once: true, margin: '-80px' });
 
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
+    <section className="py-24 md:py-32 relative overflow-hidden min-h-[100dvh] flex items-center">
       {/* Background glow */}
       <motion.div
         className="absolute inset-0 pointer-events-none"

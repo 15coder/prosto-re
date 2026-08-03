@@ -17,13 +17,9 @@ function Router() {
 }
 
 function App() {
-  // Theme (dark/light) and cursor class are managed by Home component via document.documentElement
   if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('dir', 'rtl');
-    // Start in dark mode; Home.tsx will manage toggling
-    if (!document.documentElement.classList.contains('light')) {
-      document.documentElement.classList.add('dark');
-    }
+    document.documentElement.classList.add('dark');
   }
 
   return (

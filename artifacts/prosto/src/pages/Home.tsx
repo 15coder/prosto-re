@@ -5,7 +5,7 @@ import {
 } from 'framer-motion';
 import {
   MapPin, Phone, Instagram, Facebook, Menu, X,
-  ArrowLeft, ExternalLink, Code2, Sun, Moon,
+  ArrowLeft, ExternalLink, Code2,
 } from 'lucide-react';
 import Stack from '@/components/Stack';
 import MapSection from '@/components/MapSection';
@@ -131,7 +131,6 @@ function ParallaxBg({ src, speed = 60, opacity = 0.35 }: {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function Home() {
-  const [isDark, setIsDark] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -139,18 +138,6 @@ export default function Home() {
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>('all');
 
   const { scrollY } = useScroll();
-
-  // Apply theme class
-  useEffect(() => {
-    const html = document.documentElement;
-    if (isDark) {
-      html.classList.add('dark');
-      html.classList.remove('light');
-    } else {
-      html.classList.add('light');
-      html.classList.remove('dark');
-    }
-  }, [isDark]);
 
   // Scroll listener
   useEffect(() => {
@@ -181,10 +168,6 @@ export default function Home() {
   const filtered = galleryFilter === 'all'
     ? galleryItems
     : galleryItems.filter(g => g.category === galleryFilter);
-
-  // Hero overlay colours vary by theme
-  const heroGradientDay  = "from-amber-50/80 via-amber-50/40 to-amber-50/10";
-  const heroGradientNight = "from-background via-background/55 to-background/20";
 
   return (
     <div className="bg-background text-foreground min-h-[100dvh] overflow-x-hidden selection:bg-primary selection:text-black font-sans">
@@ -232,26 +215,6 @@ export default function Home() {
               </motion.a>
             ))}
 
-            {/* Dark / Light toggle */}
-            <motion.button
-              onClick={() => setIsDark(d => !d)}
-              className="w-10 h-10 rounded-full border border-primary/30 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all duration-300"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              title={isDark ? "وضع النهار" : "وضع الليل"}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.span key={isDark ? "moon" : "sun"}
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {isDark ? <Sun size={17} /> : <Moon size={17} />}
-                </motion.span>
-              </AnimatePresence>
-            </motion.button>
-
             <motion.a href={`tel:${PHONE_NUMBER}`}
               className="bg-primary text-black px-6 py-2.5 rounded-full font-bold shadow-[0_0_20px_rgba(245,200,0,0.35)] hover:shadow-[0_0_40px_rgba(245,200,0,0.6)] transition-all text-sm"
               whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -298,14 +261,6 @@ export default function Home() {
                 </motion.a>
               ))}
               <div className="mt-2 w-full h-[1px] bg-border/50" />
-              <motion.button
-                variants={{ hidden: { opacity: 0, x: 30 }, show: { opacity: 1, x: 0 } }}
-                onClick={() => { setIsDark(d => !d); setMobileMenuOpen(false); }}
-                className="flex items-center gap-4 text-primary text-xl font-medium"
-              >
-                {isDark ? <Sun size={22} /> : <Moon size={22} />}
-                {isDark ? "وضع النهار" : "وضع الليل"}
-              </motion.button>
               <motion.a href={`tel:${PHONE_NUMBER}`}
                 variants={{ hidden: { opacity: 0, x: 30 }, show: { opacity: 1, x: 0 } }}
                 className="text-primary flex items-center gap-4 mt-2"
@@ -324,20 +279,20 @@ export default function Home() {
         <motion.div className="absolute inset-0 z-0" style={{ y: heroY }}>
           {/* Day/Night overlays */}
           <motion.div
-            className={`absolute inset-0 z-10 bg-gradient-to-t ${isDark ? heroGradientNight : heroGradientDay}`}
+            className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/55 to-background/20"
             animate={{ opacity: 1 }} transition={{ duration: 0.7 }}
           />
           <motion.div className="absolute inset-0 z-10 bg-gradient-to-r from-background/70 via-transparent to-background/70" />
           <motion.img
             src={img1} alt="Prosto Food"
             className="w-full h-full object-cover"
-            style={{ scale: heroScale, opacity: isDark ? 0.42 : 0.28 }}
+            style={{ scale: heroScale, opacity: 0.42 }}
           />
         </motion.div>
 
         {/* Golden particles */}
         <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
-          {Array.from({ length: isDark ? 25 : 12 }).map((_, i) => (
+          {Array.from({ length: 25 }).map((_, i) => (
             <motion.div key={i}
               className="absolute rounded-full bg-primary"
               style={{
@@ -345,10 +300,10 @@ export default function Home() {
                 height: 3 + (i % 5),
                 left: `${(i * 4.1) % 100}%`,
                 boxShadow: "0 0 8px rgba(245,200,0,0.7)",
-                opacity: isDark ? 0.9 : 0.5,
+                opacity: 0.9,
               }}
               initial={{ y: "110vh", opacity: 0 }}
-              animate={{ y: "-10vh", opacity: [0, isDark ? 0.9 : 0.5, 0.9, 0] }}
+              animate={{ y: "-10vh", opacity: [0, 0.9, 0.9, 0] }}
               transition={{
                 duration: 6 + (i % 8),
                 repeat: Infinity,
@@ -427,9 +382,9 @@ export default function Home() {
       </section>
 
       {/* ─── STACK SHOWCASE ─── */}
-      <section className="py-32 relative overflow-hidden">
+      <section className="py-32 relative overflow-hidden min-h-[100dvh] flex items-center">
         {/* Subtle parallax bg */}
-        <ParallaxBg src={img6} speed={40} opacity={isDark ? 0.06 : 0.04} />
+        <ParallaxBg src={img6} speed={40} opacity={0.06} />
 
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
@@ -487,9 +442,9 @@ export default function Home() {
       </section>
 
       {/* ─── ABOUT ─── */}
-      <section id="about" className="py-24 relative overflow-hidden">
+      <section id="about" className="py-24 relative overflow-hidden min-h-[100dvh] flex items-center">
         {/* Parallax bg for this section */}
-        <ParallaxBg src={img9} speed={50} opacity={isDark ? 0.05 : 0.03} />
+        <ParallaxBg src={img9} speed={50} opacity={0.05} />
 
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.015] to-transparent pointer-events-none" />
 
@@ -534,7 +489,7 @@ export default function Home() {
             <AnimatedSection
               className="p-8 md:p-12 rounded-3xl border border-primary/15 relative overflow-hidden"
               delay={0.15}
-              style={{ background: isDark ? "rgba(255,255,255,0.02)" : "rgba(255,240,200,0.25)" }}
+              style={{ background: "rgba(255,255,255,0.02)" }}
             >
               <motion.div
                 className="absolute top-0 right-0 w-40 h-40 blur-[70px] rounded-full pointer-events-none"
@@ -562,8 +517,8 @@ export default function Home() {
       </section>
 
       {/* ─── MENU HIGHLIGHTS (Glassmorphism cards) ─── */}
-      <section id="menu" className="py-32 relative overflow-hidden">
-        <ParallaxBg src={img11} speed={45} opacity={isDark ? 0.06 : 0.04} />
+      <section id="menu" className="py-32 relative overflow-hidden min-h-[100dvh] flex items-center">
+        <ParallaxBg src={img11} speed={45} opacity={0.06} />
 
         <div className="container px-6 mx-auto relative z-10">
           <AnimatedSection className="text-center mb-20">
@@ -588,10 +543,8 @@ export default function Home() {
                 className="group relative rounded-3xl overflow-hidden aspect-[4/3] cursor-none"
                 style={{
                   border: '1px solid rgba(245,200,0,0.12)',
-                  boxShadow: '0 4px 40px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(245,200,0,0.06)',
-                  background: isDark ? 'rgba(8,6,3,0.5)' : 'rgba(255,245,220,0.4)',
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
+                  boxShadow: '0 4px 40px rgba(0,0,0,0.35)',
+                  background: 'rgb(8,6,3)',
                 }}
               >
                 {/* Image */}
@@ -605,9 +558,7 @@ export default function Home() {
                 {/* Glassmorphic info panel */}
                 <div className="absolute bottom-0 left-0 right-0 z-20 p-6"
                   style={{
-                    background: 'rgba(0,0,0,0.25)',
-                    backdropFilter: 'blur(16px)',
-                    WebkitBackdropFilter: 'blur(16px)',
+                    background: 'rgba(0,0,0,0.75)',
                     borderTop: '1px solid rgba(245,200,0,0.18)',
                   }}
                 >
@@ -622,11 +573,6 @@ export default function Home() {
                   <p className="text-white/55 font-medium tracking-wider text-sm">{item.enName}</p>
                 </div>
 
-                {/* Glow border on hover */}
-                <motion.div
-                  className="absolute inset-0 rounded-3xl pointer-events-none z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ boxShadow: 'inset 0 0 0 1.5px rgba(245,200,0,0.4), inset 0 0 40px rgba(245,200,0,0.08)' }}
-                />
               </motion.div>
             ))}
           </div>
@@ -645,8 +591,8 @@ export default function Home() {
       </section>
 
       {/* ─── GALLERY (with filter + reorder) ─── */}
-      <section id="gallery" className="py-24 relative overflow-hidden">
-        <ParallaxBg src={img14} speed={35} opacity={isDark ? 0.05 : 0.03} />
+      <section id="gallery" className="py-24 relative overflow-hidden min-h-[100dvh] flex items-center">
+        <ParallaxBg src={img14} speed={35} opacity={0.05} />
 
         <motion.div
           className="absolute inset-0 pointer-events-none"
@@ -728,8 +674,8 @@ export default function Home() {
       <BehindScenes />
 
       {/* ─── DELIVERY CTA ─── */}
-      <section className="relative py-32 overflow-hidden border-y border-primary/15">
-        <ParallaxBg src={img18} speed={50} opacity={isDark ? 0.08 : 0.05} />
+      <section className="relative py-32 overflow-hidden border-y border-primary/15 min-h-[100dvh] flex items-center">
+        <ParallaxBg src={img18} speed={50} opacity={0.08} />
 
         <motion.div className="absolute inset-0 pointer-events-none"
           animate={{ background: [
@@ -757,7 +703,7 @@ export default function Home() {
 
             <motion.a href={`tel:${PHONE_NUMBER}`}
               className="group flex flex-col md:flex-row items-center justify-center gap-6 border border-foreground/10 hover:border-primary/40 backdrop-blur-xl p-8 rounded-3xl transition-all duration-400"
-              style={{ background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,240,200,0.3)' }}
+              style={{ background: 'rgba(255,255,255,0.04)' }}
               whileHover={{ scale: 1.02, boxShadow: "0 0 60px rgba(245,200,0,0.2)" }}
               whileTap={{ scale: 0.98 }}
             >

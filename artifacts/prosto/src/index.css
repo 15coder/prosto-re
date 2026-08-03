@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap');
 @import 'tailwindcss';
 
 @font-face {
-  font-family: "liftaswashfixed";
-  src: url("/fonts/liftaswashfixed_regular.otf") format("opentype");
+  font-family: "Mandisa";
+  src: url("/fonts/mandisa.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -65,8 +64,8 @@
   --color-sidebar-accent-border: var(--sidebar-accent-border);
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --font-sans: "liftaswashfixed", "Tajawal", "Inter", sans-serif;
-  --font-display: "liftaswashfixed", "Tajawal", sans-serif;
+  --font-sans: "Mandisa", "Tajawal", sans-serif;
+  --font-display: "Mandisa", "Tajawal", sans-serif;
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
 
@@ -215,43 +214,6 @@
   --shadow-2xl: 0px 2px 0px 0px hsl(46 98% 48% / 0);
 }
 
-/* ═══ LIGHT / DAY THEME ═══ */
-html.light {
-  --background: 36 22% 95%;
-  --foreground: 25 18% 10%;
-  --border: 36 15% 80%;
-  --card: 36 18% 90%;
-  --card-foreground: 25 18% 10%;
-  --card-border: 46 40% 55%;
-  --sidebar: 36 18% 90%;
-  --sidebar-foreground: 25 18% 10%;
-  --sidebar-border: 36 15% 80%;
-  --sidebar-primary: 46 90% 36%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 36 15% 86%;
-  --sidebar-accent-foreground: 25 18% 10%;
-  --sidebar-ring: 46 90% 36%;
-  --popover: 36 18% 92%;
-  --popover-foreground: 25 18% 10%;
-  --popover-border: 36 15% 80%;
-  --primary: 46 90% 36%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 36 15% 88%;
-  --secondary-foreground: 25 18% 20%;
-  --muted: 36 12% 86%;
-  --muted-foreground: 25 15% 42%;
-  --accent: 46 90% 36%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 84% 55%;
-  --destructive-foreground: 0 0% 98%;
-  --input: 36 15% 80%;
-  --ring: 46 90% 36%;
-  --chart-1: 46 90% 36%;
-  --chart-2: 40 85% 44%;
-  --chart-3: 35 85% 44%;
-  --chart-4: 50 85% 44%;
-  --chart-5: 55 85% 44%;
-}
 
 /* Inherit cursor:none on desktop when custom cursor is active */
 html.custom-cursor,

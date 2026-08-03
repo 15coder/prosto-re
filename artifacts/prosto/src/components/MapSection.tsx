@@ -75,7 +75,7 @@ export default function MapSection() {
   }, []);
 
   return (
-    <section id="location" className="py-24 relative">
+    <section id="location" className="py-24 relative min-h-[100dvh] flex items-center">
       <div className="container px-6 mx-auto">
 
         {/* Header */}
