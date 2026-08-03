@@ -37,6 +37,11 @@ import img18    from "@assets/prosto_restaurant.2026_20260802_111413_509_1785659
 import burgerImg1 from "@assets/برغر١_1785779651107.jpg";
 import burgerImg2 from "@assets/برغر٢_1785779651119.jpg";
 import burgerImg3 from "@assets/برغر٣_1785779651068.jpg";
+import pizzaImg1  from "@assets/بيتزا١_1785779841029.jpg";
+import pizzaImg2  from "@assets/بيتزا٢_1785779841015.jpg";
+import pizzaImg3  from "@assets/بيتزا٣_1785779841002.jpg";
+import pizzaImg4  from "@assets/بيتزا٤_1785779840989.jpg";
+import pizzaImg5  from "@assets/بيتزا٥_1785779841023.jpg";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const PHONE_NUMBER = "0996006263";
@@ -64,7 +69,12 @@ const galleryItems: { src: string; label: string; category: GalleryFilter }[] = 
   { src: img5,  label: "أجواء مميزة",  category: "all"     },
   { src: img4,  label: "دجاج مقرمش",   category: "chicken" },
   { src: img6,  label: "طعم لا يُنسى", category: "all"     },
-  { src: img7,  label: "بيتزا بروستو", category: "pizza"   },
+  { src: img7,      label: "بيتزا بروستو",   category: "pizza"   },
+  { src: pizzaImg1, label: "بيتزا دجاج",     category: "pizza"   },
+  { src: pizzaImg2, label: "بيتزا خضار",     category: "pizza"   },
+  { src: pizzaImg3, label: "بيتزا مشكلة",    category: "pizza"   },
+  { src: pizzaImg4, label: "تشكيلة البيتزا", category: "pizza"   },
+  { src: pizzaImg5, label: "بيتزا جبنة",     category: "pizza"   },
   { src: img9,  label: "جودة عالية",   category: "all"     },
   { src: img18, label: "شهية مفتوحة",  category: "chicken" },
   { src: burgerImg1, label: "برغر بروستو",   category: "burger"  },
