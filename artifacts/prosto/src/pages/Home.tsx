@@ -33,6 +33,9 @@ import img11    from "@assets/prosto_restaurant.2026_20260802_111323_925_1785659
 import img12    from "@assets/prosto_restaurant.2026_20260802_111323_212_1785659366994.jpg";
 import img14    from "@assets/prosto_restaurant.2026_20260802_111320_214_1785659367045.jpg";
 import img15    from "@assets/prosto_restaurant.2026_20260802_111318_848_1785659367054.jpg";
+import burger1  from "@assets/برغر١_1785779452807.jpg";
+import burger2  from "@assets/برغر٢_1785779452801.jpg";
+import burger3  from "@assets/برغر٣_1785779452812.jpg";
 import img18    from "@assets/prosto_restaurant.2026_20260802_111413_509_1785659366896.jpg";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -47,12 +50,14 @@ const navLinks = [
 ];
 
 const menuItems = [
-  { id: 1, name: "برغر",              enName: "Burger",              img: img15 },
-  { id: 2, name: "دبابيس دجاج مقرمشة", enName: "Crispy Chicken Skewers", img: img4  },
-  { id: 3, name: "بيتزا",             enName: "Pizza",               img: img7  },
-  { id: 4, name: "فاهيتا",            enName: "Fajita",              img: img8  },
-  { id: 5, name: "كوردون بلو",        enName: "Cordon Bleu",         img: img10 },
-  { id: 6, name: "شاورما",            enName: "Shawarma",            img: img12 },
+  { id: 1, name: "برغر",              enName: "Burger",              img: burger1 },
+  { id: 2, name: "برغر",              enName: "Burger",              img: burger2 },
+  { id: 3, name: "تشيز برغر",         enName: "Cheese Burger",       img: burger3 },
+  { id: 4, name: "دبابيس دجاج مقرمشة", enName: "Crispy Chicken Skewers", img: img4  },
+  { id: 5, name: "بيتزا",             enName: "Pizza",               img: img7  },
+  { id: 6, name: "فاهيتا",            enName: "Fajita",              img: img8  },
+  { id: 7, name: "كوردون بلو",        enName: "Cordon Bleu",         img: img10 },
+  { id: 8, name: "شاورما",            enName: "Shawarma",            img: img12 },
 ];
 
 type GalleryFilter = 'all' | 'burger' | 'chicken' | 'pizza';
