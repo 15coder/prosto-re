@@ -628,8 +628,6 @@ export default function Home() {
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-95"
                 />
 
-                {/* Gradient vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
 
                 {/* Glassmorphic info panel */}
                 <div className="absolute bottom-0 left-0 right-0 z-20 p-6"
