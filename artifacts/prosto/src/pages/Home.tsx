@@ -46,13 +46,13 @@ const navLinks = [
   { name: "موقعنا",   href: "#location" },
 ];
 
-const pizzaItems = [
-  { id: 1, name: "بيتزا جبنة",        enName: "Cheese Pizza",        img: img7  },
-];
-
-const burgerItems = [
-  { id: 1, name: "برغر بروستو",       enName: "Prosto Burger",       img: img15 },
-  { id: 2, name: "ساندويتش دجاج",     enName: "Chicken Sandwich",    img: img11 },
+const menuItems = [
+  { id: 1, name: "برغر",              enName: "Burger",              img: img15 },
+  { id: 2, name: "دبابيس دجاج مقرمشة", enName: "Crispy Chicken Skewers", img: img4  },
+  { id: 3, name: "بيتزا",             enName: "Pizza",               img: img7  },
+  { id: 4, name: "فاهيتا",            enName: "Fajita",              img: img8  },
+  { id: 5, name: "كوردون بلو",        enName: "Cordon Bleu",         img: img10 },
+  { id: 6, name: "شاورما",            enName: "Shawarma",            img: img12 },
 ];
 
 type GalleryFilter = 'all' | 'burger' | 'chicken' | 'pizza';
@@ -670,39 +670,13 @@ export default function Home() {
             <p className="text-xl text-foreground/45">أطباقنا الأكثر طلباً والأشد قرمشة</p>
           </AnimatedSection>
 
-          {/* ── Pizza Section ── */}
-          <AnimatedSection className="mb-16" delay={0}>
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-3xl">🍕</span>
-              <h3 className="text-2xl md:text-3xl font-black font-display">
-                قسم <span className="text-primary">البيتزا</span>
-              </h3>
-              <div className="flex-1 h-[1px] bg-primary/20 mr-2" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {pizzaItems.map((item, i) => (
-                <MenuCard key={item.id} item={item} index={i} />
-              ))}
-            </div>
-          </AnimatedSection>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-16">
+            {menuItems.map((item, i) => (
+              <MenuCard key={item.id} item={item} index={i} />
+            ))}
+          </div>
 
-          {/* ── Burger Section ── */}
-          <AnimatedSection className="mb-16" delay={0.1}>
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-3xl">🍔</span>
-              <h3 className="text-2xl md:text-3xl font-black font-display">
-                قسم <span className="text-primary">البرغر</span>
-              </h3>
-              <div className="flex-1 h-[1px] bg-primary/20 mr-2" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {burgerItems.map((item, i) => (
-                <MenuCard key={item.id} item={item} index={i} />
-              ))}
-            </div>
-          </AnimatedSection>
-
-          <AnimatedSection className="mt-8 text-center" delay={0.2}>
+          <AnimatedSection className="mt-0 text-center" delay={0.2}>
             <motion.a href={`tel:${PHONE_NUMBER}`}
               className="inline-flex items-center justify-center gap-2 px-10 py-4 border border-primary/30 text-primary hover:bg-primary hover:text-black rounded-full font-bold transition-all duration-300"
               whileHover={{ scale: 1.04, boxShadow: "0 0 30px rgba(245,200,0,0.3)" }}
