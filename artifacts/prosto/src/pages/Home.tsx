@@ -46,13 +46,13 @@ const navLinks = [
   { name: "موقعنا",   href: "#location" },
 ];
 
-const menuItems = [
-  { id: 1, name: "برغر",              enName: "Burger",              img: img3  },
-  { id: 2, name: "دبابيس دجاج مقرمشة", enName: "Crispy Chicken Skewers", img: img4  },
-  { id: 3, name: "بيتزا",             enName: "Pizza",               img: img7  },
-  { id: 4, name: "فاهيتا",            enName: "Fajita",              img: img8  },
-  { id: 5, name: "كوردون بلو",        enName: "Cordon Bleu",         img: img10 },
-  { id: 6, name: "شاورما",            enName: "Shawarma",            img: img12 },
+const pizzaItems = [
+  { id: 1, name: "بيتزا جبنة",        enName: "Cheese Pizza",        img: img7  },
+];
+
+const burgerItems = [
+  { id: 1, name: "برغر بروستو",       enName: "Prosto Burger",       img: img15 },
+  { id: 2, name: "ساندويتش دجاج",     enName: "Chicken Sandwich",    img: img11 },
 ];
 
 type GalleryFilter = 'all' | 'burger' | 'chicken' | 'pizza';
@@ -66,7 +66,7 @@ const galleryItems: { src: string; label: string; category: GalleryFilter }[] = 
   { src: img18, label: "شهية مفتوحة",  category: "chicken" },
   { src: img8,  label: "قرمشة ذهبية",  category: "burger"  },
   { src: img11, label: "وصفات سرية",   category: "all"     },
-  { src: img15, label: "نكهة فريدة",   category: "pizza"   },
+  { src: img15, label: "برغر بروستو",  category: "burger"  },
   { src: img14, label: "مكونات طازجة", category: "all"     },
   { src: img10, label: "كوردون بلو",   category: "chicken" },
   { src: img2,  label: "تشكيلة رائعة", category: "chicken" },
@@ -110,6 +110,69 @@ function useMagnet(strength = 30) {
   };
   const handleLeave = () => { x.set(0); y.set(0); };
   return { sx, sy, handleMove, handleLeave };
+}
+
+/** Menu item card with image fallback */
+function MenuCard({ item, index }: { item: { name: string; enName: string; img: string }; index: number }) {
+  const [imgError, setImgError] = React.useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ delay: index * 0.08, type: "spring", stiffness: 90, damping: 18 }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="group relative rounded-3xl overflow-hidden aspect-[4/3] cursor-none"
+      style={{
+        border: '1px solid rgba(245,200,0,0.12)',
+        boxShadow: '0 4px 40px rgba(0,0,0,0.35)',
+        background: 'rgb(8,6,3)',
+      }}
+    >
+      {imgError ? (
+        /* Fallback when image fails to load */
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-background via-foreground/5 to-background">
+          <motion.div
+            className="text-5xl"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {item.enName.toLowerCase().includes("pizza") ? "🍕" : "🍔"}
+          </motion.div>
+          <p className="text-foreground/50 text-sm font-medium">{item.name}</p>
+        </div>
+      ) : (
+        <img
+          src={item.img}
+          alt={item.name}
+          onError={() => setImgError(true)}
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+        />
+      )}
+
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10 pointer-events-none" />
+
+      {/* Info panel */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 p-5">
+        <motion.div className="w-10 h-[3px] bg-primary mb-3 rounded-full"
+          style={{ filter: 'drop-shadow(0 0 6px rgba(245,200,0,0.8))' }}
+          initial={{ scaleX: 0, originX: 1 }}
+          whileInView={{ scaleX: 1 }} viewport={{ once: true }}
+          transition={{ delay: 0.2 + index * 0.07, duration: 0.4 }}
+        />
+        <h3 className="text-2xl font-black text-white mb-1 group-hover:text-primary transition-colors duration-300"
+          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.7)' }}
+        >
+          {item.name}
+        </h3>
+        <p className="text-white font-medium tracking-wider text-sm"
+          style={{ textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}
+        >{item.enName}</p>
+      </div>
+    </motion.div>
+  );
 }
 
 /** Per-section parallax background image */
@@ -591,7 +654,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── MENU HIGHLIGHTS (Glassmorphism cards) ─── */}
+      {/* ─── MENU (Pizza + Burger sections) ─── */}
       <section id="menu" className="py-32 relative overflow-hidden min-h-[100dvh] flex items-center">
         <ParallaxBg src={img11} speed={45} opacity={0.06} />
 
@@ -607,49 +670,39 @@ export default function Home() {
             <p className="text-xl text-foreground/45">أطباقنا الأكثر طلباً والأشد قرمشة</p>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {menuItems.map((item, i) => (
-              <motion.div key={item.id}
-                initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: i * 0.08, type: "spring", stiffness: 90, damping: 18 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative rounded-3xl overflow-hidden aspect-[4/3] cursor-none"
-                style={{
-                  border: '1px solid rgba(245,200,0,0.12)',
-                  boxShadow: '0 4px 40px rgba(0,0,0,0.35)',
-                  background: 'rgb(8,6,3)',
-                }}
-              >
-                {/* Image */}
-                <img src={item.img} alt={item.name}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                />
+          {/* ── Pizza Section ── */}
+          <AnimatedSection className="mb-16" delay={0}>
+            <div className="flex items-center gap-3 mb-8">
+              <span className="text-3xl">🍕</span>
+              <h3 className="text-2xl md:text-3xl font-black font-display">
+                قسم <span className="text-primary">البيتزا</span>
+              </h3>
+              <div className="flex-1 h-[1px] bg-primary/20 mr-2" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {pizzaItems.map((item, i) => (
+                <MenuCard key={item.id} item={item} index={i} />
+              ))}
+            </div>
+          </AnimatedSection>
 
-                {/* Info panel — no background, text over image */}
-                <div className="absolute bottom-0 left-0 right-0 z-20 p-5">
-                  <motion.div className="w-10 h-[3px] bg-primary mb-3 rounded-full"
-                    style={{ filter: 'drop-shadow(0 0 6px rgba(245,200,0,0.8))' }}
-                    initial={{ scaleX: 0, originX: 1 }}
-                    whileInView={{ scaleX: 1 }} viewport={{ once: true }}
-                    transition={{ delay: 0.2 + i * 0.07, duration: 0.4 }}
-                  />
-                  <h3 className="text-2xl font-black text-white mb-1 group-hover:text-primary transition-colors duration-300"
-                    style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.7)' }}
-                  >
-                    {item.name}
-                  </h3>
-                  <p className="text-white font-medium tracking-wider text-sm"
-                    style={{ textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}
-                  >{item.enName}</p>
-                </div>
+          {/* ── Burger Section ── */}
+          <AnimatedSection className="mb-16" delay={0.1}>
+            <div className="flex items-center gap-3 mb-8">
+              <span className="text-3xl">🍔</span>
+              <h3 className="text-2xl md:text-3xl font-black font-display">
+                قسم <span className="text-primary">البرغر</span>
+              </h3>
+              <div className="flex-1 h-[1px] bg-primary/20 mr-2" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {burgerItems.map((item, i) => (
+                <MenuCard key={item.id} item={item} index={i} />
+              ))}
+            </div>
+          </AnimatedSection>
 
-              </motion.div>
-            ))}
-          </div>
-
-          <AnimatedSection className="mt-16 text-center" delay={0.2}>
+          <AnimatedSection className="mt-8 text-center" delay={0.2}>
             <motion.a href={`tel:${PHONE_NUMBER}`}
               className="inline-flex items-center justify-center gap-2 px-10 py-4 border border-primary/30 text-primary hover:bg-primary hover:text-black rounded-full font-bold transition-all duration-300"
               whileHover={{ scale: 1.04, boxShadow: "0 0 30px rgba(245,200,0,0.3)" }}
