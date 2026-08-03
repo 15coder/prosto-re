@@ -34,6 +34,9 @@ import img12    from "@assets/prosto_restaurant.2026_20260802_111323_212_1785659
 import img14    from "@assets/prosto_restaurant.2026_20260802_111320_214_1785659367045.jpg";
 import img15    from "@assets/prosto_restaurant.2026_20260802_111318_848_1785659367054.jpg";
 import img18    from "@assets/prosto_restaurant.2026_20260802_111413_509_1785659366896.jpg";
+import burgerImg1 from "@assets/برغر١_1785779651107.jpg";
+import burgerImg2 from "@assets/برغر٢_1785779651119.jpg";
+import burgerImg3 from "@assets/برغر٣_1785779651068.jpg";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const PHONE_NUMBER = "0996006263";
@@ -64,9 +67,10 @@ const galleryItems: { src: string; label: string; category: GalleryFilter }[] = 
   { src: img7,  label: "بيتزا بروستو", category: "pizza"   },
   { src: img9,  label: "جودة عالية",   category: "all"     },
   { src: img18, label: "شهية مفتوحة",  category: "chicken" },
-  { src: img8,  label: "قرمشة ذهبية",  category: "burger"  },
+  { src: burgerImg1, label: "برغر بروستو",   category: "burger"  },
+  { src: burgerImg2, label: "برغر كلاسيك",  category: "burger"  },
+  { src: burgerImg3, label: "تشيز برغر",    category: "burger"  },
   { src: img11, label: "وصفات سرية",   category: "all"     },
-  { src: img15, label: "برغر بروستو",  category: "burger"  },
   { src: img14, label: "مكونات طازجة", category: "all"     },
   { src: img10, label: "كوردون بلو",   category: "chicken" },
   { src: img2,  label: "تشكيلة رائعة", category: "chicken" },
