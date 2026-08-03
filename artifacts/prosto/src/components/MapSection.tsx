@@ -27,9 +27,9 @@ export default function MapSection() {
 
       instanceRef.current = map;
 
-      // CartoDB Dark Matter — flat modern dark tiles
+      // CartoDB Positron — flat modern light tiles
       L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
         { subdomains: 'abcd', maxZoom: 20 }
       ).addTo(map);
 
@@ -103,7 +103,14 @@ export default function MapSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: 'spring', stiffness: 70, damping: 22, delay: 0.1 }}
-          style={{ border: '1px solid rgba(245,200,0,0.15)' }}
+          animate={{
+            boxShadow: [
+              '0 0 0px rgba(245,200,0,0), 0 0 0px rgba(245,200,0,0)',
+              '0 0 30px rgba(245,200,0,0.35), 0 0 60px rgba(245,200,0,0.15)',
+              '0 0 0px rgba(245,200,0,0), 0 0 0px rgba(245,200,0,0)',
+            ],
+          }}
+          style={{ border: '2px solid rgba(245,200,0,0.5)' }}
         >
           {/* Map */}
           <div ref={mapRef} style={{ height: '420px', width: '100%' }} />
