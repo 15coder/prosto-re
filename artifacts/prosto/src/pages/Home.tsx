@@ -625,26 +625,25 @@ export default function Home() {
               >
                 {/* Image */}
                 <img src={item.img} alt={item.name}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-95"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
 
-
-                {/* Glassmorphic info panel */}
-                <div className="absolute bottom-0 left-0 right-0 z-20 p-6"
-                  style={{
-                    background: 'rgba(0,0,0,0.75)',
-                    borderTop: '1px solid rgba(245,200,0,0.18)',
-                  }}
-                >
+                {/* Info panel — no background, text over image */}
+                <div className="absolute bottom-0 left-0 right-0 z-20 p-5">
                   <motion.div className="w-10 h-[3px] bg-primary mb-3 rounded-full"
+                    style={{ filter: 'drop-shadow(0 0 6px rgba(245,200,0,0.8))' }}
                     initial={{ scaleX: 0, originX: 1 }}
                     whileInView={{ scaleX: 1 }} viewport={{ once: true }}
                     transition={{ delay: 0.2 + i * 0.07, duration: 0.4 }}
                   />
-                  <h3 className="text-2xl font-black text-white mb-1 group-hover:text-primary transition-colors duration-300">
+                  <h3 className="text-2xl font-black text-white mb-1 group-hover:text-primary transition-colors duration-300"
+                    style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.7)' }}
+                  >
                     {item.name}
                   </h3>
-                  <p className="text-white/55 font-medium tracking-wider text-sm">{item.enName}</p>
+                  <p className="text-white font-medium tracking-wider text-sm"
+                    style={{ textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}
+                  >{item.enName}</p>
                 </div>
 
               </motion.div>
