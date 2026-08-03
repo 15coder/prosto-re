@@ -129,6 +129,82 @@ function ParallaxBg({ src, speed = 60, opacity = 0.35 }: {
   );
 }
 
+// ─── Coder Credit (collision animation) ──────────────────────────────────────
+function CoderCredit() {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-40px" });
+
+  // Split: "نداء" comes from right, "الرحمن" from left (RTL layout)
+  const rightWord = "نداء";
+  const leftWord  = "الرحمن";
+
+  const wordVariants = (fromX: number) => ({
+    hidden: { opacity: 0, x: fromX },
+    visible: {
+      opacity: 1, x: 0,
+      transition: { type: "spring" as const, stiffness: 260, damping: 18, delay: 0.1 },
+    },
+  });
+
+  const logoVariants = {
+    hidden: { opacity: 0, scale: 0.4 },
+    visible: {
+      opacity: 1, scale: 1,
+      transition: { type: "spring" as const, stiffness: 200, damping: 16, delay: 0.55 },
+    },
+  };
+
+  return (
+    <motion.a
+      ref={ref}
+      href="https://Needaa.netlify.app"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-md transition-all duration-200 overflow-hidden"
+      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(245,200,0,0.35)")}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
+      whileHover={{ scale: 1.03 }}
+    >
+      {/* Logo — circular */}
+      <motion.div
+        variants={logoVariants}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+        className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-blue-400/40 shrink-0"
+      >
+        <img src="/coder-logo.jpg" alt="15coder" className="w-full h-full object-cover" />
+      </motion.div>
+
+      <Code2 className="w-3 h-3 text-primary/60 shrink-0" />
+      <span className="text-foreground/30 text-[11px]">تصميم وبرمجة</span>
+      <span className="w-px h-3 bg-foreground/10" />
+
+      {/* Collision name */}
+      <span className="flex items-center gap-[2px] overflow-hidden" dir="rtl">
+        <motion.span
+          variants={wordVariants(40)}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="text-foreground/60 text-[11px] font-medium group-hover:text-primary transition-colors duration-200 inline-block"
+        >
+          {rightWord}
+        </motion.span>
+        <motion.span
+          variants={wordVariants(-40)}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="text-foreground/60 text-[11px] font-medium group-hover:text-primary transition-colors duration-200 inline-block"
+        >
+          &nbsp;{leftWord}
+        </motion.span>
+      </span>
+
+      <ExternalLink className="w-2.5 h-2.5 text-foreground/20 group-hover:text-primary/60 transition-colors shrink-0" />
+    </motion.a>
+  );
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -796,18 +872,7 @@ export default function Home() {
             <p className="text-foreground/20 text-[11px]">
               &copy; {new Date().getFullYear()} PROSTO Restaurant. All rights reserved.
             </p>
-            <a href="https://Needaa.netlify.app" target="_blank" rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-md transition-all duration-200"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(245,200,0,0.35)")}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
-            >
-              <Code2 className="w-3 h-3 text-primary/70 shrink-0" />
-              <span className="text-foreground/35 text-[11px]">تصميم وبرمجة</span>
-              <span className="w-px h-3 bg-foreground/10" />
-              <span className="text-foreground/65 text-[11px] font-medium group-hover:text-primary transition-colors duration-200">نداء الرحمن</span>
-              <ExternalLink className="w-2.5 h-2.5 text-foreground/20 group-hover:text-primary/60 transition-colors shrink-0" />
-            </a>
+            <CoderCredit />
           </div>
         </div>
       </footer>

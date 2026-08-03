@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 
 @font-face {
-  font-family: "Mandisa";
-  src: url("/fonts/mandisa.ttf") format("truetype");
+  font-family: "liftaswashfixed";
+  src: url("/fonts/liftaswashfixed_regular.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -64,8 +64,8 @@
   --color-sidebar-accent-border: var(--sidebar-accent-border);
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --font-sans: "Mandisa", "Tajawal", sans-serif;
-  --font-display: "Mandisa", "Tajawal", sans-serif;
+  --font-sans: "liftaswashfixed", "Tajawal", sans-serif;
+  --font-display: "liftaswashfixed", "Tajawal", sans-serif;
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
 
