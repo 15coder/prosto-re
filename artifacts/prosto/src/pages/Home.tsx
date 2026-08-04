@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import Stack from '@/components/Stack';
 import MapSection from '@/components/MapSection';
-import CustomCursor from '@/components/CustomCursor';
 import ReadingProgress from '@/components/ReadingProgress';
 import FloatingSidebar from '@/components/FloatingSidebar';
 import TypewriterText from '@/components/TypewriterText';
@@ -63,33 +62,32 @@ const menuItems = [
   { id: 6, name: "شاورما",            enName: "Shawarma",            img: img12 },
 ];
 
-type GalleryFilter = 'all' | 'burger' | 'chicken' | 'pizza';
+type GalleryFilter = 'burger' | 'chicken' | 'pizza';
 
 const galleryItems: { src: string; label: string; category: GalleryFilter }[] = [
-  { src: img5,  label: "أجواء مميزة",  category: "all"     },
+  { src: img5,  label: "أجواء مميزة",  category: "chicken" },
   { src: img4,  label: "دجاج مقرمش",   category: "chicken" },
-  { src: img6,  label: "طعم لا يُنسى", category: "all"     },
+  { src: img6,  label: "طعم لا يُنسى", category: "pizza"   },
   { src: img7,      label: "بيتزا بروستو",   category: "pizza"   },
   { src: pizzaImg1, label: "بيتزا دجاج",     category: "pizza"   },
   { src: pizzaImg2, label: "بيتزا خضار",     category: "pizza"   },
   { src: pizzaImg3, label: "بيتزا مشكلة",    category: "pizza"   },
   { src: pizzaImg4, label: "تشكيلة البيتزا", category: "pizza"   },
   { src: pizzaImg5, label: "بيتزا جبنة",     category: "pizza"   },
-  { src: img9,  label: "جودة عالية",   category: "all"     },
+  { src: img9,  label: "جودة عالية",   category: "burger"  },
   { src: img18, label: "شهية مفتوحة",  category: "chicken" },
   { src: burgerImg1, label: "برغر بروستو",   category: "burger"  },
   { src: burgerImg2, label: "برغر كلاسيك",  category: "burger"  },
   { src: burgerImg3, label: "تشيز برغر",    category: "burger"  },
-  { src: img11, label: "وصفات سرية",   category: "all"     },
-  { src: img14, label: "مكونات طازجة", category: "all"     },
+  { src: img11, label: "وصفات سرية",   category: "chicken" },
+  { src: img14, label: "مكونات طازجة", category: "burger"  },
   { src: img10, label: "كوردون بلو",   category: "chicken" },
   { src: img2,  label: "تشكيلة رائعة", category: "chicken" },
-  { src: img1,  label: "طبق خاص",      category: "all"     },
+  { src: img1,  label: "طبق خاص",      category: "burger"  },
   { src: img12, label: "شاورما حارة",  category: "chicken" },
 ];
 
 const filterLabels: Record<GalleryFilter, string> = {
-  all:     "كل شيء",
   burger:  "برغر 🍔",
   chicken: "دجاج 🍗",
   pizza:   "بيتزا 🍕",
@@ -137,7 +135,7 @@ function MenuCard({ item, index }: { item: { name: string; enName: string; img: 
       viewport={{ once: true, margin: "-60px" }}
       transition={{ delay: index * 0.08, type: "spring", stiffness: 90, damping: 18 }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="group relative rounded-3xl overflow-hidden aspect-[4/3] cursor-none"
+      className="group relative rounded-3xl overflow-hidden aspect-[4/3]"
       style={{
         border: '1px solid rgba(245,200,0,0.12)',
         boxShadow: '0 4px 40px rgba(0,0,0,0.35)',
@@ -161,7 +159,7 @@ function MenuCard({ item, index }: { item: { name: string; enName: string; img: 
           src={item.img}
           alt={item.name}
           onError={() => setImgError(true)}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
         />
       )}
 
@@ -199,36 +197,24 @@ function ParallaxBg({ src, speed = 60, opacity = 0.35 }: {
   return (
     <motion.div ref={ref} className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <motion.img src={src} alt="" className="absolute inset-0 w-full h-full object-cover"
-        style={{ y, opacity, scale: 1.2 }}
+        style={{ y, opacity, scale: 1.2, willChange: 'transform' }}
       />
     </motion.div>
   );
 }
 
-// ─── Coder Credit (collision animation) ──────────────────────────────────────
+// ─── Coder Credit (per-character cinematic entrance) ─────────────────────────
 function CoderCredit() {
   const ref = useRef<HTMLAnchorElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
-  // Split: "نداء" comes from right, "الرحمن" from left (RTL layout)
-  const rightWord = "نداء";
-  const leftWord  = "الرحمن";
-
-  const wordVariants = (fromX: number) => ({
-    hidden: { opacity: 0, x: fromX },
-    visible: {
-      opacity: 1, x: 0,
-      transition: { type: "spring" as const, stiffness: 260, damping: 18, delay: 0.1 },
-    },
-  });
-
-  const logoVariants = {
-    hidden: { opacity: 0, scale: 0.4 },
-    visible: {
-      opacity: 1, scale: 1,
-      transition: { type: "spring" as const, stiffness: 200, damping: 16, delay: 0.55 },
-    },
-  };
+  // Each word of the name animates in independently
+  const words = ["نداء", "الرحمن"];
+  // Direction alternates: first word flies from right, second from left (RTL)
+  const wordOrigins = [
+    { x: 60,  y: -20, rotate: 12  },
+    { x: -60, y: 20,  rotate: -12 },
+  ];
 
   return (
     <motion.a
@@ -236,47 +222,83 @@ function CoderCredit() {
       href="https://Needaa.netlify.app"
       target="_blank"
       rel="noopener noreferrer"
-      className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-md transition-all duration-200 overflow-hidden"
+      className="group inline-flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300"
       style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(245,200,0,0.35)")}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(245,200,0,0.4)")}
       onMouseLeave={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
-      whileHover={{ scale: 1.03 }}
+      whileHover={{ scale: 1.04 }}
     >
-      {/* Logo — circular */}
+      {/* Logo — spins in */}
       <motion.div
-        variants={logoVariants}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-blue-400/40 shrink-0"
+        initial={{ opacity: 0, scale: 0.2, rotate: -200 }}
+        animate={isInView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+        transition={{ type: "spring", stiffness: 220, damping: 16, delay: 0.05 }}
+        className="w-7 h-7 rounded-full overflow-hidden ring-1 ring-primary/50 shrink-0"
       >
         <img src="/coder-logo.jpg" alt="15coder" className="w-full h-full object-cover" />
       </motion.div>
 
-      <Code2 className="w-3 h-3 text-primary/60 shrink-0" />
-      <span className="text-foreground/30 text-[11px]">تصميم وبرمجة</span>
-      <span className="w-px h-3 bg-foreground/10" />
+      {/* Icon — pops in */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        animate={isInView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.18 }}
+      >
+        <Code2 className="w-4 h-4 text-primary/60 shrink-0" />
+      </motion.div>
 
-      {/* Collision name */}
-      <span className="flex items-center gap-[2px] overflow-hidden" dir="rtl">
-        <motion.span
-          variants={wordVariants(40)}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="text-foreground/60 text-[11px] font-medium group-hover:text-primary transition-colors duration-200 inline-block"
-        >
-          {rightWord}
-        </motion.span>
-        <motion.span
-          variants={wordVariants(-40)}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="text-foreground/60 text-[11px] font-medium group-hover:text-primary transition-colors duration-200 inline-block"
-        >
-          &nbsp;{leftWord}
-        </motion.span>
+      {/* Label — slides up */}
+      <motion.span
+        initial={{ opacity: 0, y: 12 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ type: "spring", stiffness: 240, damping: 22, delay: 0.25 }}
+        className="text-foreground/35 text-xs"
+      >
+        تصميم وبرمجة
+      </motion.span>
+
+      <motion.span
+        className="w-px h-4 bg-foreground/10"
+        initial={{ scaleY: 0 }}
+        animate={isInView ? { scaleY: 1 } : {}}
+        transition={{ duration: 0.3, delay: 0.35 }}
+      />
+
+      {/* Name — each word bursts in from a different direction */}
+      <span className="flex items-baseline gap-1.5 overflow-visible" dir="rtl">
+        {words.map((word, i) => (
+          <motion.span
+            key={word}
+            initial={{
+              opacity: 0,
+              x: wordOrigins[i].x,
+              y: wordOrigins[i].y,
+              rotate: wordOrigins[i].rotate,
+              scale: 0.5,
+            }}
+            animate={isInView ? { opacity: 1, x: 0, y: 0, rotate: 0, scale: 1 } : {}}
+            transition={{
+              type: "spring",
+              stiffness: 280,
+              damping: 18,
+              delay: 0.42 + i * 0.12,
+            }}
+            className="text-base font-black text-foreground/80 group-hover:text-primary transition-colors duration-200 inline-block"
+            style={{ textShadow: "0 0 20px rgba(245,200,0,0)" }}
+            whileHover={{ textShadow: "0 0 20px rgba(245,200,0,0.6)" }}
+          >
+            {word}
+          </motion.span>
+        ))}
       </span>
 
-      <ExternalLink className="w-2.5 h-2.5 text-foreground/20 group-hover:text-primary/60 transition-colors shrink-0" />
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        animate={isInView ? { opacity: 1, x: 0 } : {}}
+        transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.7 }}
+      >
+        <ExternalLink className="w-3 h-3 text-foreground/25 group-hover:text-primary/70 transition-colors shrink-0" />
+      </motion.div>
     </motion.a>
   );
 }
@@ -287,7 +309,7 @@ export default function Home() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
-  const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>('all');
+  const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>('chicken');
 
   const { scrollY } = useScroll();
 
@@ -317,15 +339,12 @@ export default function Home() {
     show:   { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 90, damping: 20 } },
   };
 
-  const filtered = galleryFilter === 'all'
-    ? galleryItems
-    : galleryItems.filter(g => g.category === galleryFilter);
+  const filtered = galleryItems.filter(g => g.category === galleryFilter);
 
   return (
     <div className="bg-background text-foreground min-h-[100dvh] overflow-x-hidden selection:bg-primary selection:text-black font-sans">
 
       {/* ─── Global overlays ─── */}
-      <CustomCursor />
       <ReadingProgress />
       <FloatingSidebar />
 
@@ -749,20 +768,21 @@ export default function Home() {
 
           {/* Filtered grid with layout animation */}
           <LayoutGroup>
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <AnimatePresence mode="popLayout">
+            <motion.div layout="position" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              <AnimatePresence mode="sync" initial={false}>
                 {filtered.map((item, i) => (
                   <motion.div key={item.src + item.label}
-                    layout
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    layout="position"
+                    initial={{ opacity: 0, scale: 0.85 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.75 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 28, delay: i * 0.03 }}
-                    className="group relative rounded-2xl overflow-hidden aspect-square cursor-none"
+                    exit={{ opacity: 0, scale: 0.85 }}
+                    transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1], delay: i * 0.02 }}
+                    className="group relative rounded-2xl overflow-hidden aspect-square"
                     whileHover={{ scale: 1.04, zIndex: 20 }}
                   >
                     <img src={item.src} alt={item.label}
-                      className="w-full h-full object-cover transition-transform duration-600 ease-out group-hover:scale-115"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                      style={{ willChange: 'transform' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                     <motion.div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-400 mix-blend-overlay" />

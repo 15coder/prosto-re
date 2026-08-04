@@ -1,7 +1,7 @@
 kind = "web"
 previewPath = "/"
 title = "PROSTO Restaurant"
-description = "A stunning animated landing page for PROSTO (بروستو) fast food restaurant in Iraq. Features cinematic food photography, iOS 27-inspired glass morphism design, smooth scroll animations, and the React Bits Stack component showcasing menu items. Single-page static site ready for Netlify deployment."
+description = "A bilingual (Arabic/English) animated landing page for PROSTO fast food restaurant in Deir ez-Zor, Syria. Features cinematic food photography, glass morphism design, smooth scroll animations, and a menu showcase."
 version = "1.0.0"
 id = "artifacts/prosto"
 router = "path"
