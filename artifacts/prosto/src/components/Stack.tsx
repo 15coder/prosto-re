@@ -64,7 +64,7 @@ export default function Stack({
   randomRotation = false,
   sensitivity = 200,
   cards = [],
-  animationConfig = { stiffness: 260, damping: 20 },
+  animationConfig = { stiffness: 180, damping: 26 },
   sendToBackOnClick = false,
   autoplay = false,
   autoplayDelay = 3000,
