@@ -28,6 +28,7 @@ const COUPON_CODE = "Hello";
 const COUPON_DISCOUNT_RATE = 0.1;
 
 type LocationStatus = "idle" | "loading" | "success" | "error";
+type TelegramStatus = "idle" | "sending" | "success" | "error";
 
 function haversineDistanceInKm(
   from: { lat: number; lng: number },
@@ -60,6 +61,8 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState(COUPON_CODE);
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponMessage, setCouponMessage] = useState("");
+  const [telegramStatus, setTelegramStatus] = useState<TelegramStatus>("idle");
+  const [telegramMessage, setTelegramMessage] = useState("");
 
   useEffect(() => {
     window.localStorage.setItem("prosto-cart-v1", JSON.stringify(cart));
@@ -123,14 +126,52 @@ export default function CheckoutPage() {
     );
   };
 
-  const sendToWhatsApp = () => {
+  const sendToWhatsApp = async () => {
     if (!coordinates || distance === null || deliveryFee === null) return;
 
     const mapLink = `https://www.google.com/maps?q=${coordinates.lat},${coordinates.lng}`;
-    const message = [
-      "مرحباً مطعم بروستو، أريد تأكيد طلبي:",
+    const whatsappWindow = window.open("about:blank", "_blank");
+    setTelegramStatus("sending");
+    setTelegramMessage("جارٍ إرسال نسخة التحقق الرسمية إلى المطعم...");
+
+    try {
+      const response = await fetch("/api/telegram/order", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          items: lines.map((line) => ({
+            name: line.name,
+            quantity: line.quantity,
+            lineTotal: line.lineTotal,
+          })),
+          subtotal,
+          discount,
+          deliveryFee,
+          total,
+          distanceKm: distance,
+          billableKilometers,
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          ...(couponApplied ? { couponCode: COUPON_CODE } : {}),
+        }),
+      });
+      const result = (await response.json()) as {
+        ok?: boolean;
+        verificationCode?: string;
+        message?: string;
+      };
+
+      if (!response.ok || !result.ok || !result.verificationCode) {
+        throw new Error(result.message ?? "تعذر إرسال نسخة التحقق.");
+      }
+
+      const message = [
+        "مرحباً مطعم بروستو، أريد تأكيد طلبي:",
+        "",
+        `رمز المطابقة الرسمي: ${result.verificationCode}`,
+        "",
       "",
-      ...lines.map((line) => `• ${line.name} × ${line.quantity} = ${formatSYP(line.lineTotal)}`),
+        ...lines.map((line) => `• ${line.name} × ${line.quantity} = ${formatSYP(line.lineTotal)}`),
       "",
       `المجموع الفرعي: ${formatSYP(subtotal)}`,
       ...(couponApplied ? [`كود الخصم: ${COUPON_CODE}`, `قيمة الخصم: -${formatSYP(discount)}`] : []),
@@ -143,11 +184,19 @@ export default function CheckoutPage() {
       "يرجى تأكيد الطلب والوقت المتوقع للتوصيل. شكراً.",
     ].join("\n");
 
-    window.open(
-      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
-      "_blank",
-      "noopener,noreferrer",
-    );
+      const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      if (whatsappWindow) {
+        whatsappWindow.location.href = whatsappUrl;
+      } else {
+        window.location.href = whatsappUrl;
+      }
+      setTelegramStatus("success");
+      setTelegramMessage("تم إرسال نسخة رسمية إلى تليجرام. قارن رمز المطابقة والسعر قبل اعتماد الطلب.");
+    } catch (error) {
+      whatsappWindow?.close();
+      setTelegramStatus("error");
+      setTelegramMessage(error instanceof Error ? error.message : "تعذر إرسال نسخة التحقق.");
+    }
   };
 
   if (lines.length === 0) {
@@ -367,14 +416,23 @@ export default function CheckoutPage() {
               <button
                 type="button"
                 onClick={sendToWhatsApp}
-                disabled={!coordinates || locationStatus !== "success"}
+                disabled={!coordinates || locationStatus !== "success" || telegramStatus === "sending"}
                 className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-4 font-black text-[#071b0d] transition-all hover:scale-[1.01] hover:shadow-[0_0_25px_rgba(37,211,102,0.3)] disabled:cursor-not-allowed disabled:opacity-35"
               >
                 <MessageCircle className="h-5 w-5" />
-                اطلب الآن عبر واتساب
+                {telegramStatus === "sending" ? "جارٍ تجهيز الطلب..." : "اطلب الآن عبر واتساب"}
               </button>
+              {telegramMessage && (
+                <p
+                  className={`mt-3 text-center text-[11px] font-bold leading-5 ${
+                    telegramStatus === "error" ? "text-red-300" : "text-foreground"
+                  }`}
+                >
+                  {telegramMessage}
+                </p>
+              )}
               <p className="mt-3 text-center text-[11px] leading-5 text-foreground">
-                بعد الضغط ستفتح محادثة واتساب برسالة تحتوي الأصناف والمجموع والموقع.
+                تُرسل نسخة رسمية إلى تليجرام أولاً، ثم تفتح محادثة واتساب برسالة تحمل رمز المطابقة.
               </p>
             </section>
           </aside>
