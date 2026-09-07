@@ -1,0 +1,328 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+  AlertCircle,
+  ArrowRight,
+  CheckCircle2,
+  MapPin,
+  MessageCircle,
+  Minus,
+  Navigation,
+  Plus,
+  ShoppingBag,
+  Trash2,
+} from "lucide-react";
+import { useLocation } from "wouter";
+import {
+  formatSYP,
+  getCartLines,
+  getCartTotal,
+  readCart,
+  type CartQuantities,
+} from "@/lib/order";
+
+const WHATSAPP_NUMBER = "963996006263";
+const RESTAURANT_LOCATION = { lat: 35.3311, lng: 40.1407 };
+const DELIVERY_RATE_PER_KM = 1000;
+
+type LocationStatus = "idle" | "loading" | "success" | "error";
+
+function haversineDistanceInKm(
+  from: { lat: number; lng: number },
+  to: { lat: number; lng: number },
+) {
+  const earthRadiusKm = 6371;
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+  const latitudeDelta = toRadians(to.lat - from.lat);
+  const longitudeDelta = toRadians(to.lng - from.lng);
+  const latitudeA = toRadians(from.lat);
+  const latitudeB = toRadians(to.lat);
+  const a =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.sin(longitudeDelta / 2) ** 2 * Math.cos(latitudeA) * Math.cos(latitudeB);
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+const formatDistance = (distance: number) =>
+  `${new Intl.NumberFormat("ar-SY", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(distance)} كم`;
+
+export default function CheckoutPage() {
+  const [, setLocation] = useLocation();
+  const [cart, setCart] = useState<CartQuantities>(() => readCart());
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
+  const [locationError, setLocationError] = useState("");
+
+  useEffect(() => {
+    window.localStorage.setItem("prosto-cart-v1", JSON.stringify(cart));
+  }, [cart]);
+
+  const lines = useMemo(() => getCartLines(cart), [cart]);
+  const subtotal = useMemo(() => getCartTotal(cart), [cart]);
+  const distance = coordinates ? haversineDistanceInKm(RESTAURANT_LOCATION, coordinates) : null;
+  const billableKilometers = distance === null ? null : Math.max(1, Math.ceil(distance));
+  const deliveryFee = billableKilometers === null ? null : billableKilometers * DELIVERY_RATE_PER_KM;
+  const total = subtotal + (deliveryFee ?? 0);
+
+  const updateQuantity = (itemId: string, quantity: number) => {
+    setCart((current) => {
+      const next = { ...current };
+      if (quantity > 0) next[itemId] = quantity;
+      else delete next[itemId];
+      return next;
+    });
+  };
+
+  const clearCart = () => {
+    setCart({});
+    window.localStorage.removeItem("prosto-cart-v1");
+  };
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationStatus("error");
+      setLocationError("المتصفح لا يدعم تحديد الموقع. افتح الصفحة من هاتف حديث وحاول مجددًا.");
+      return;
+    }
+
+    setLocationStatus("loading");
+    setLocationError("");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCoordinates({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setLocationStatus("success");
+      },
+      () => {
+        setLocationStatus("error");
+        setLocationError("لم نتمكن من الوصول إلى موقعك. فعّل إذن الموقع ثم اضغط الزر مرة أخرى.");
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
+  };
+
+  const sendToWhatsApp = () => {
+    if (!coordinates || distance === null || deliveryFee === null) return;
+
+    const mapLink = `https://www.google.com/maps?q=${coordinates.lat},${coordinates.lng}`;
+    const message = [
+      "مرحباً مطعم بروستو، أريد تأكيد طلبي:",
+      "",
+      ...lines.map((line) => `• ${line.name} × ${line.quantity} = ${formatSYP(line.lineTotal)}`),
+      "",
+      `المجموع الفرعي: ${formatSYP(subtotal)}`,
+      `المسافة التقريبية من المطعم: ${formatDistance(distance)}`,
+      `الكيلومترات المحسوبة للتوصيل: ${billableKilometers} كم`,
+      `أجرة التوصيل: ${formatSYP(deliveryFee)}`,
+      `المجموع الكلي: ${formatSYP(total)}`,
+      "",
+      `موقع الزبون: ${mapLink}`,
+      "يرجى تأكيد الطلب والوقت المتوقع للتوصيل. شكراً.",
+    ].join("\n");
+
+    window.open(
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
+  if (lines.length === 0) {
+    return (
+      <main dir="rtl" className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
+        <div className="w-full max-w-lg rounded-3xl border border-foreground/10 bg-white/[0.035] p-8 text-center shadow-2xl">
+          <ShoppingBag className="mx-auto mb-5 h-12 w-12 text-primary" />
+          <h1 className="mb-3 font-display text-3xl font-black">السلة فارغة</h1>
+          <p className="mb-7 leading-7 text-foreground/50">أضف وجبتك المفضلة من المنيو أولاً، ثم عد إلى صفحة الفاتورة.</p>
+          <button
+            type="button"
+            onClick={() => setLocation("/menu")}
+            className="rounded-xl bg-primary px-7 py-3 font-black text-black transition-transform hover:scale-[1.02]"
+          >
+            تصفح المنيو
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main dir="rtl" className="min-h-screen overflow-x-hidden bg-background text-foreground">
+      <header className="border-b border-foreground/10 bg-background/85 backdrop-blur-2xl">
+        <div className="container mx-auto flex items-center justify-between gap-4 px-6 py-4">
+          <button
+            type="button"
+            onClick={() => setLocation("/menu")}
+            className="inline-flex items-center gap-2 text-sm font-bold text-foreground/65 transition-colors hover:text-primary"
+          >
+            <ArrowRight className="h-4 w-4" />
+            تعديل الطلب
+          </button>
+          <a href="/" className="font-display text-2xl font-black text-primary">PROSTO</a>
+          <span className="hidden text-sm text-foreground/35 sm:block">الفاتورة النهائية</span>
+        </div>
+      </header>
+
+      <div className="container mx-auto max-w-5xl px-6 pb-20 pt-12 md:pt-20">
+        <div className="mb-10">
+          <p className="mb-3 text-sm font-bold tracking-widest text-primary">PROSTO CHECKOUT</p>
+          <h1 className="font-display text-4xl font-black md:text-6xl">
+            تفاصيل <span className="text-primary">طلبك</span>
+          </h1>
+          <p className="mt-4 max-w-2xl leading-8 text-foreground/50">
+            راجع اختيارك، ثم حدد موقعك ليتم حساب التوصيل بدقة وإرسال الفاتورة كاملة إلى واتساب.
+          </p>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <section className="rounded-3xl border border-foreground/10 bg-white/[0.035] p-5 shadow-2xl md:p-7">
+            <div className="mb-6 flex items-center justify-between gap-4 border-b border-foreground/10 pb-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                  <ShoppingBag className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="font-black">الأصناف المختارة</h2>
+                  <p className="text-xs text-foreground/40">{lines.length} أصناف مختلفة</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={clearCart}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-red-300/70 transition-colors hover:text-red-300"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                إفراغ السلة
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {lines.map((line) => (
+                <div key={line.id} className="flex items-center gap-3 rounded-2xl border border-foreground/8 bg-black/10 p-3 sm:gap-4">
+                  <img src={line.image} alt={line.name} className="h-16 w-16 shrink-0 rounded-xl object-cover sm:h-20 sm:w-20" />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-black">{line.name}</h3>
+                    <p className="mt-1 text-xs text-foreground/40">{formatSYP(line.price)} للقطعة</p>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-2">
+                    <p className="font-black text-primary">{formatSYP(line.lineTotal)}</p>
+                    <div className="inline-flex items-center gap-2 rounded-full border border-foreground/10 p-1">
+                      <button
+                        type="button"
+                        aria-label={`زيادة ${line.name}`}
+                        onClick={() => updateQuantity(line.id, line.quantity + 1)}
+                        className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-black"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                      </button>
+                      <span className="min-w-5 text-center text-sm font-black">{line.quantity}</span>
+                      <button
+                        type="button"
+                        aria-label={`إنقاص ${line.name}`}
+                        onClick={() => updateQuantity(line.id, line.quantity - 1)}
+                        className="flex h-7 w-7 items-center justify-center rounded-full border border-foreground/15 text-foreground/70"
+                      >
+                        <Minus className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <aside className="space-y-6">
+            <section className="rounded-3xl border border-primary/20 bg-primary/[0.06] p-5 shadow-2xl md:p-7">
+              <div className="mb-5 flex items-start gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-black">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="font-black">حدد موقع التوصيل</h2>
+                  <p className="mt-1 text-sm leading-6 text-foreground/50">سنحسب المسافة من المطعم ونضيف 1,000 ليرة عن كل كيلومتر.</p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={requestLocation}
+                disabled={locationStatus === "loading"}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 font-black text-black transition-all hover:shadow-[0_0_25px_rgba(245,200,0,0.35)] disabled:cursor-wait disabled:opacity-60"
+              >
+                {locationStatus === "loading" ? (
+                  "جارٍ تحديد موقعك..."
+                ) : locationStatus === "success" ? (
+                  <>
+                    <CheckCircle2 className="h-5 w-5" />
+                    تم تحديد موقعي
+                  </>
+                ) : (
+                  <>
+                    <Navigation className="h-5 w-5" />
+                    تحديد موقعي الآن
+                  </>
+                )}
+              </button>
+
+              {locationStatus === "success" && distance !== null && deliveryFee !== null && (
+                <div className="mt-4 rounded-2xl border border-primary/20 bg-black/15 p-4">
+                  <div className="flex items-center justify-between gap-3 text-sm">
+                    <span className="text-foreground/50">المسافة المحسوبة</span>
+                    <strong className="text-primary">{formatDistance(distance)}</strong>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between gap-3 text-sm">
+                    <span className="text-foreground/50">المسافة المحاسبية</span>
+                    <strong>{billableKilometers} كم × {formatSYP(DELIVERY_RATE_PER_KM)}</strong>
+                  </div>
+                </div>
+              )}
+
+              {locationStatus === "error" && (
+                <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-red-300">
+                  <AlertCircle className="mt-1 h-4 w-4 shrink-0" />
+                  {locationError}
+                </p>
+              )}
+            </section>
+
+            <section className="rounded-3xl border border-foreground/10 bg-white/[0.035] p-5 shadow-2xl md:p-7">
+              <h2 className="mb-5 font-black">ملخص الفاتورة</h2>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center justify-between gap-3 text-foreground/55">
+                  <span>مجموع الوجبات</span>
+                  <strong className="text-foreground">{formatSYP(subtotal)}</strong>
+                </div>
+                <div className="flex items-center justify-between gap-3 text-foreground/55">
+                  <span>سعر التوصيل</span>
+                  <strong className="text-foreground">{deliveryFee === null ? "حدد موقعك" : formatSYP(deliveryFee)}</strong>
+                </div>
+                <div className="my-4 border-t border-foreground/10" />
+                <div className="flex items-end justify-between gap-3">
+                  <span className="font-bold text-foreground/65">المجموع الكلي</span>
+                  <strong className="text-2xl font-black text-primary">{formatSYP(total)}</strong>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={sendToWhatsApp}
+                disabled={!coordinates || locationStatus !== "success"}
+                className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-4 font-black text-[#071b0d] transition-all hover:scale-[1.01] hover:shadow-[0_0_25px_rgba(37,211,102,0.3)] disabled:cursor-not-allowed disabled:opacity-35"
+              >
+                <MessageCircle className="h-5 w-5" />
+                اطلب الآن عبر واتساب
+              </button>
+              <p className="mt-3 text-center text-[11px] leading-5 text-foreground/35">
+                بعد الضغط ستفتح محادثة واتساب برسالة تحتوي الأصناف والمجموع والموقع.
+              </p>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  );
+}

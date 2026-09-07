@@ -3,6 +3,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import Home from '@/pages/Home';
+import MenuPage from '@/pages/MenuPage';
+import CheckoutPage from '@/pages/CheckoutPage';
 import PWAInstallBanner from '@/components/PWAInstallBanner';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 
@@ -12,6 +14,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/menu" component={MenuPage} />
+      <Route path="/checkout" component={CheckoutPage} />
       <Route component={NotFound} />
     </Switch>
   );

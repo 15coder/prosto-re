@@ -5,7 +5,7 @@ import {
 } from 'framer-motion';
 import {
   MapPin, Phone, Instagram, Facebook, Menu, X,
-  ArrowLeft, ExternalLink, Code2,
+  ArrowLeft, ExternalLink, Code2, ArrowDown, Utensils,
 } from 'lucide-react';
 import Stack from '@/components/Stack';
 import MapSection from '@/components/MapSection';
@@ -13,7 +13,7 @@ import ReadingProgress from '@/components/ReadingProgress';
 import FloatingSidebar from '@/components/FloatingSidebar';
 import TypewriterText from '@/components/TypewriterText';
 import WavyDivider from '@/components/WavyDivider';
-import { HeartIcon, StarIcon, FlameIcon } from '@/components/AnimatedIcons';
+import { HeartIcon, FlameIcon } from '@/components/AnimatedIcons';
 
 // ─── Images ─────────────────────────────────────────────────────────────────
 import logoImg  from "@assets/prosto_restaurant.2026_20260802_103738_853_1785659367070.jpg";
@@ -30,7 +30,6 @@ import img10    from "@assets/prosto_restaurant.2026_20260802_111325_014_1785659
 import img11    from "@assets/prosto_restaurant.2026_20260802_111323_925_1785659366987.jpg";
 import img12    from "@assets/prosto_restaurant.2026_20260802_111323_212_1785659366994.jpg";
 import img14    from "@assets/prosto_restaurant.2026_20260802_111320_214_1785659367045.jpg";
-import img15    from "@assets/prosto_restaurant.2026_20260802_111318_848_1785659367054.jpg";
 import img18    from "@assets/prosto_restaurant.2026_20260802_111413_509_1785659366896.jpg";
 import burgerImg1 from "@assets/برغر١_1785779651107.jpg";
 import burgerImg2 from "@assets/برغر٢_1785779651119.jpg";
@@ -47,18 +46,9 @@ const PHONE_NUMBER = "0996006263";
 const navLinks = [
   { name: "الرئيسية", href: "#hero" },
   { name: "قصتنا",    href: "#about" },
-  { name: "المنيو",   href: "#menu" },
+  { name: "المنيو",   href: "/menu" },
   { name: "المعرض",   href: "#gallery" },
   { name: "موقعنا",   href: "#location" },
-];
-
-const menuItems = [
-  { id: 1, name: "برغر",              enName: "Burger",              img: img15 },
-  { id: 2, name: "دبابيس دجاج مقرمشة", enName: "Crispy Chicken Skewers", img: img4  },
-  { id: 3, name: "بيتزا",             enName: "Pizza",               img: img7  },
-  { id: 4, name: "فاهيتا",            enName: "Fajita",              img: img8  },
-  { id: 5, name: "كوردون بلو",        enName: "Cordon Bleu",         img: img10 },
-  { id: 6, name: "شاورما",            enName: "Shawarma",            img: img12 },
 ];
 
 type GalleryFilter = 'burger' | 'chicken' | 'pizza';
@@ -121,69 +111,6 @@ function useMagnet(strength = 30) {
   };
   const handleLeave = () => { x.set(0); y.set(0); };
   return { sx, sy, handleMove, handleLeave };
-}
-
-/** Menu item card with image fallback */
-function MenuCard({ item, index }: { item: { name: string; enName: string; img: string }; index: number }) {
-  const [imgError, setImgError] = React.useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ delay: index * 0.06, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      className="group relative rounded-3xl overflow-hidden aspect-[4/3] will-change-transform"
-      style={{
-        border: '1px solid rgba(245,200,0,0.12)',
-        boxShadow: '0 4px 40px rgba(0,0,0,0.35)',
-        background: 'rgb(8,6,3)',
-      }}
-    >
-      {imgError ? (
-        /* Fallback when image fails to load */
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-background via-foreground/5 to-background">
-          <motion.div
-            className="text-5xl"
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            {item.enName.toLowerCase().includes("pizza") ? "🍕" : "🍔"}
-          </motion.div>
-          <p className="text-foreground/50 text-sm font-medium">{item.name}</p>
-        </div>
-      ) : (
-        <img
-          src={item.img}
-          alt={item.name}
-          onError={() => setImgError(true)}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
-        />
-      )}
-
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10 pointer-events-none" />
-
-      {/* Info panel */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 p-5">
-        <motion.div className="w-10 h-[3px] bg-primary mb-3 rounded-full"
-          style={{ filter: 'drop-shadow(0 0 6px rgba(245,200,0,0.8))' }}
-          initial={{ scaleX: 0, originX: 1 }}
-          whileInView={{ scaleX: 1 }} viewport={{ once: true }}
-          transition={{ delay: 0.2 + index * 0.07, duration: 0.4 }}
-        />
-        <h3 className="text-2xl font-black text-white mb-1 group-hover:text-primary transition-colors duration-300"
-          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.7)' }}
-        >
-          {item.name}
-        </h3>
-        <p className="text-white font-medium tracking-wider text-sm"
-          style={{ textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}
-        >{item.enName}</p>
-      </div>
-    </motion.div>
-  );
 }
 
 /** Per-section parallax background image */
@@ -535,17 +462,25 @@ export default function Home() {
               <TypewriterText text="لأن الجوع إلو بروستو!" delay={1.2} speed={80} />
             </motion.p>
 
-            <motion.div variants={fadeUp}>
-              <motion.a href={`tel:${PHONE_NUMBER}`}
-                className="group relative inline-flex items-center justify-center gap-3 bg-primary text-black px-12 py-5 rounded-full font-black text-xl md:text-2xl overflow-hidden shadow-[0_0_50px_rgba(245,200,0,0.45)] hover:shadow-[0_0_80px_rgba(245,200,0,0.7)] transition-shadow"
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <motion.a
+                href="#about"
+                className="group relative inline-flex items-center justify-center gap-3 border border-foreground/25 text-foreground px-8 py-4 rounded-full font-bold text-lg overflow-hidden transition-colors hover:border-primary hover:text-primary"
                 style={{ x: ctaMagnet.sx, y: ctaMagnet.sy }}
                 onMouseMove={ctaMagnet.handleMove}
                 onMouseLeave={ctaMagnet.handleLeave}
-                whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.94 }}
+                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
               >
-                <motion.div className="absolute inset-0 bg-white/25 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full" />
-                <Phone className="w-6 h-6 relative z-10 animate-pulse" />
-                <span className="relative z-10">اطلب الآن / Order Now</span>
+                <ArrowDown className="w-5 h-5" />
+                <span>تصفح الموقع</span>
+              </motion.a>
+              <motion.a
+                href="/menu"
+                className="inline-flex items-center justify-center gap-3 bg-primary text-black px-8 py-4 rounded-full font-black text-lg shadow-[0_0_35px_rgba(245,200,0,0.35)] hover:shadow-[0_0_60px_rgba(245,200,0,0.55)] transition-shadow"
+                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+              >
+                <Utensils className="w-5 h-5" />
+                <span>عرض الـ menu</span>
               </motion.a>
             </motion.div>
           </motion.div>
@@ -690,41 +625,6 @@ export default function Home() {
               </motion.div>
             </AnimatedSection>
           </div>
-        </div>
-      </section>
-
-      {/* ─── MENU (Pizza + Burger sections) ─── */}
-      <section id="menu" className="py-32 relative overflow-hidden min-h-[100dvh] flex items-center">
-        <ParallaxBg src={img11} speed={45} opacity={0.06} />
-
-        <div className="container px-6 mx-auto relative z-10">
-          <AnimatedSection className="text-center mb-20">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <StarIcon size={28} />
-              <h2 className="text-4xl md:text-6xl font-black font-display">
-                أبطال <span className="text-primary">المنيو</span>
-              </h2>
-              <StarIcon size={28} />
-            </div>
-            <p className="text-xl text-foreground/45">أطباقنا الأكثر طلباً والأشد قرمشة</p>
-          </AnimatedSection>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-16">
-            {menuItems.map((item, i) => (
-              <MenuCard key={item.id} item={item} index={i} />
-            ))}
-          </div>
-
-          <AnimatedSection className="mt-0 text-center" delay={0.2}>
-            <motion.a href={`tel:${PHONE_NUMBER}`}
-              className="inline-flex items-center justify-center gap-2 px-10 py-4 border border-primary/30 text-primary hover:bg-primary hover:text-black rounded-full font-bold transition-all duration-300"
-              whileHover={{ scale: 1.04, boxShadow: "0 0 30px rgba(245,200,0,0.3)" }}
-              whileTap={{ scale: 0.96 }}
-            >
-              <Phone className="w-4 h-4" />
-              اطلب المنيو كامل الآن
-            </motion.a>
-          </AnimatedSection>
         </div>
       </section>
 
