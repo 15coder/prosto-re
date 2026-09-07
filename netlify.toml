@@ -10,5 +10,6 @@
 
 [[redirects]]
   from   = "/*"
-  to     = "/index.html"
-  status = 200
+  to     = "https://ru-prosto.netlify.app/:splat"
+  status = 301
+  force  = true
