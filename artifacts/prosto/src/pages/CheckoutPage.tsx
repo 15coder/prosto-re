@@ -9,7 +9,6 @@ import {
   Navigation,
   Plus,
   ShoppingBag,
-  Tag,
   Trash2,
 } from "lucide-react";
 import { useLocation } from "wouter";
@@ -24,7 +23,6 @@ import {
 const WHATSAPP_NUMBER = "963996006263";
 const RESTAURANT_LOCATION = { lat: 35.3311, lng: 40.1407 };
 const DELIVERY_RATE_PER_KM = 1000;
-const COUPON_CODE = "Hello";
 const COUPON_DISCOUNT_RATE = 0.1;
 
 type LocationStatus = "idle" | "loading" | "success" | "error";
@@ -47,7 +45,8 @@ function haversineDistanceInKm(
 }
 
 const formatDistance = (distance: number) =>
-  `${new Intl.NumberFormat("ar-SY", {
+  `${new Intl.NumberFormat("en-US", {
+    numberingSystem: "latn",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(distance)} كم`;
@@ -58,9 +57,6 @@ export default function CheckoutPage() {
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [locationError, setLocationError] = useState("");
-  const [couponCode, setCouponCode] = useState(COUPON_CODE);
-  const [couponApplied, setCouponApplied] = useState(false);
-  const [couponMessage, setCouponMessage] = useState("");
   const [telegramStatus, setTelegramStatus] = useState<TelegramStatus>("idle");
   const [telegramMessage, setTelegramMessage] = useState("");
 
@@ -73,19 +69,9 @@ export default function CheckoutPage() {
   const distance = coordinates ? haversineDistanceInKm(RESTAURANT_LOCATION, coordinates) : null;
   const billableKilometers = distance === null ? null : Math.max(1, Math.ceil(distance));
   const deliveryFee = billableKilometers === null ? null : billableKilometers * DELIVERY_RATE_PER_KM;
-  const discount = couponApplied ? Math.round(subtotal * COUPON_DISCOUNT_RATE) : 0;
+  // Keep the promotion out of the customer-facing UI while preserving its discount.
+  const discount = Math.round(subtotal * COUPON_DISCOUNT_RATE);
   const total = subtotal - discount + (deliveryFee ?? 0);
-
-  const applyCoupon = () => {
-    if (couponCode.trim().toLowerCase() === COUPON_CODE.toLowerCase()) {
-      setCouponApplied(true);
-      setCouponMessage("تم تطبيق كود Hello — خصم 10٪");
-      return;
-    }
-
-    setCouponApplied(false);
-    setCouponMessage("كود الخصم غير صحيح");
-  };
 
   const updateQuantity = (itemId: string, quantity: number) => {
     setCart((current) => {
@@ -152,14 +138,23 @@ export default function CheckoutPage() {
           billableKilometers,
           latitude: coordinates.lat,
           longitude: coordinates.lng,
-          ...(couponApplied ? { couponCode: COUPON_CODE } : {}),
         }),
       });
-      const result = (await response.json()) as {
+      const responseText = await response.text();
+      let result: {
         ok?: boolean;
         verificationCode?: string;
         message?: string;
       };
+      try {
+        result = JSON.parse(responseText) as typeof result;
+      } catch {
+        throw new Error(
+          response.ok
+            ? "تعذر قراءة رد الخادم."
+            : "تعذر الوصول إلى خادم الطلب. حاول مجددًا بعد لحظات.",
+        );
+      }
 
       if (!response.ok || !result.ok || !result.verificationCode) {
         throw new Error(result.message ?? "تعذر إرسال نسخة التحقق.");
@@ -174,7 +169,7 @@ export default function CheckoutPage() {
         ...lines.map((line) => `• ${line.name} × ${line.quantity} = ${formatSYP(line.lineTotal)}`),
       "",
       `المجموع الفرعي: ${formatSYP(subtotal)}`,
-      ...(couponApplied ? [`كود الخصم: ${COUPON_CODE}`, `قيمة الخصم: -${formatSYP(discount)}`] : []),
+      `قيمة الخصم: -${formatSYP(discount)}`,
       `المسافة التقريبية من المطعم: ${formatDistance(distance)}`,
       `الكيلومترات المحسوبة للتوصيل: ${billableKilometers} كم`,
       `أجرة التوصيل: ${formatSYP(deliveryFee)}`,
@@ -359,38 +354,6 @@ export default function CheckoutPage() {
 
             <section className="rounded-3xl border border-foreground/10 bg-white/[0.035] p-5 shadow-2xl md:p-7">
               <h2 className="mb-5 font-black">ملخص الفاتورة</h2>
-              <div className="mb-6 rounded-2xl border border-primary/20 bg-primary/[0.06] p-4">
-                <label htmlFor="coupon-code" className="mb-3 flex items-center gap-2 text-sm font-bold">
-                  <Tag className="h-4 w-4 text-primary" />
-                  كود الخصم
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    id="coupon-code"
-                    value={couponCode}
-                    onChange={(event) => {
-                      setCouponCode(event.target.value);
-                      setCouponApplied(false);
-                      setCouponMessage("");
-                    }}
-                    placeholder="Hello"
-                    dir="ltr"
-                    className="min-w-0 flex-1 rounded-xl border border-foreground/15 bg-black/20 px-3 py-2.5 text-center text-sm font-bold text-foreground outline-none transition-colors placeholder:text-foreground focus:border-primary"
-                  />
-                  <button
-                    type="button"
-                    onClick={applyCoupon}
-                    className="rounded-xl bg-primary px-4 py-2.5 text-sm font-black text-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
-                  >
-                    تطبيق
-                  </button>
-                </div>
-                {couponMessage && (
-                  <p className={`mt-2 text-xs font-bold ${couponApplied ? "text-green-300" : "text-red-300"}`}>
-                    {couponMessage}
-                  </p>
-                )}
-              </div>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between gap-3 text-foreground">
                   <span>مجموع الوجبات</span>
@@ -400,12 +363,10 @@ export default function CheckoutPage() {
                   <span>سعر التوصيل</span>
                   <strong className="text-foreground">{deliveryFee === null ? "حدد موقعك" : formatSYP(deliveryFee)}</strong>
                 </div>
-                {couponApplied && (
-                  <div className="flex items-center justify-between gap-3 text-green-300">
-                    <span>الخصم</span>
-                    <strong>-{formatSYP(discount)}</strong>
-                  </div>
-                )}
+                <div className="flex items-center justify-between gap-3 text-green-300">
+                  <span>الخصم</span>
+                  <strong>-{formatSYP(discount)}</strong>
+                </div>
                 <div className="my-4 border-t border-foreground/10" />
                 <div className="flex items-end justify-between gap-3">
                   <span className="font-bold text-foreground">المجموع الكلي</span>

@@ -462,6 +462,26 @@ export default function Home() {
                 <span>عرض المنيو</span>
               </motion.a>
             </motion.div>
+
+            <motion.div variants={fadeUp} className="mt-8 flex items-center justify-center gap-3" aria-label="حسابات بروستو على مواقع التواصل">
+              {[
+                { href: "https://instagram.com/prosto_restaurant.2026", label: "إنستغرام", icon: <Instagram className="h-5 w-5" /> },
+                { href: "https://www.facebook.com/share/1CiMzSXhdU/", label: "فيسبوك", icon: <Facebook className="h-5 w-5" /> },
+              ].map((social) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/35 bg-black/30 text-primary backdrop-blur-sm transition-colors hover:bg-primary hover:text-black"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.94 }}
+                >
+                  {social.icon}
+                </motion.a>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
 
@@ -645,7 +665,7 @@ export default function Home() {
             </motion.h2>
             <p className="text-xl md:text-2xl text-primary font-medium mb-10">لباب بيتك، ساخن ومقرمش كما تحب!</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-right">
+            <div className="mx-auto max-w-md text-right">
               <a href="/menu"
                 className="group flex min-h-[170px] flex-col items-center justify-center gap-4 border border-primary/35 bg-primary text-black p-8 rounded-3xl transition-transform duration-200 hover:-translate-y-1 active:translate-y-0"
               >
@@ -655,19 +675,6 @@ export default function Home() {
                 <div className="text-center">
                   <p className="text-black text-sm mb-1">جهّز طلبك</p>
                   <p className="text-2xl font-black">انتقل إلى المنيو</p>
-                </div>
-              </a>
-              <a href={`tel:${PHONE_NUMBER}`}
-                className="group flex min-h-[170px] flex-col items-center justify-center gap-4 border border-foreground/10 hover:border-primary/40 bg-black/25 p-8 rounded-3xl transition-transform duration-200 hover:-translate-y-1 active:translate-y-0"
-              >
-                <div className="bg-primary/20 p-4 rounded-full">
-                  <Phone className="w-9 h-9 text-primary" />
-                </div>
-                <div className="text-center">
-                  <p className="text-foreground text-sm mb-1">اتصل الآن للطلب</p>
-                  <p className="text-3xl md:text-4xl font-black text-foreground tracking-wider font-mono" dir="ltr">
-                    {PHONE_NUMBER}
-                  </p>
                 </div>
               </a>
             </div>

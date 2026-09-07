@@ -6,7 +6,7 @@ export type CartLine = MenuItem & { quantity: number; lineTotal: number };
 export const CART_STORAGE_KEY = "prosto-cart-v1";
 
 export const formatSYP = (amount: number) =>
-  `${new Intl.NumberFormat("ar-SY").format(Math.round(amount))} ل.س`;
+  `${new Intl.NumberFormat("en-US", { numberingSystem: "latn" }).format(Math.round(amount))} ل.س`;
 
 export function readCart(): CartQuantities {
   if (typeof window === "undefined") return {};

@@ -59,10 +59,11 @@ const isValidOrder = (body: unknown): body is TelegramOrderRequest => {
 };
 
 const formatSYP = (amount: number) =>
-  `${new Intl.NumberFormat("ar-SY").format(Math.round(amount))} ل.س`;
+  `${new Intl.NumberFormat("en-US", { numberingSystem: "latn" }).format(Math.round(amount))} ل.س`;
 
 const formatDistance = (distance: number) =>
-  `${new Intl.NumberFormat("ar-SY", {
+  `${new Intl.NumberFormat("en-US", {
+    numberingSystem: "latn",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(distance)} كم`;
@@ -72,7 +73,8 @@ const createTelegramMessage = (
   verificationCode: string,
 ) => {
   const mapLink = `https://www.google.com/maps?q=${order.latitude},${order.longitude}`;
-  const timestamp = new Intl.DateTimeFormat("ar-SY", {
+  const timestamp = new Intl.DateTimeFormat("en-US", {
+    numberingSystem: "latn",
     dateStyle: "short",
     timeStyle: "short",
     timeZone: "Asia/Damascus",
