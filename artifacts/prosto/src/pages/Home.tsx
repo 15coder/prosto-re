@@ -151,7 +151,7 @@ function CoderCredit() {
         animate={isInView ? { opacity: 1, scale: 1 } : {}}
         transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.18 }}
       >
-        <Code2 className="w-4 h-4 text-primary/60 shrink-0" />
+        <Code2 className="w-4 h-4 text-primary shrink-0" />
       </motion.div>
 
       {/* Label — slides up */}
@@ -159,7 +159,7 @@ function CoderCredit() {
         initial={{ opacity: 0, y: 12 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ type: "spring", stiffness: 240, damping: 22, delay: 0.25 }}
-        className="text-foreground/35 text-xs"
+        className="text-foreground text-xs"
       >
         تصميم وبرمجة
       </motion.span>
@@ -190,7 +190,7 @@ function CoderCredit() {
               damping: 18,
               delay: 0.42 + i * 0.12,
             }}
-            className="text-base font-black text-foreground/80 group-hover:text-primary transition-colors duration-200 inline-block"
+            className="text-base font-black text-foreground group-hover:text-primary transition-colors duration-200 inline-block"
             style={{ textShadow: "0 0 20px rgba(245,200,0,0)" }}
             whileHover={{ textShadow: "0 0 20px rgba(245,200,0,0.6)" }}
           >
@@ -204,7 +204,7 @@ function CoderCredit() {
         animate={isInView ? { opacity: 1, x: 0 } : {}}
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.7 }}
       >
-        <ExternalLink className="w-3 h-3 text-foreground/25 group-hover:text-primary/70 transition-colors shrink-0" />
+        <ExternalLink className="w-3 h-3 text-foreground group-hover:text-primary transition-colors shrink-0" />
       </motion.div>
     </motion.a>
   );
@@ -296,7 +296,7 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-7 font-medium">
             {navLinks.map((link, i) => (
               <motion.a key={link.name} href={link.href}
-                className="text-foreground/65 hover:text-primary transition-colors text-base relative group"
+                className="text-foreground hover:text-primary transition-colors text-base relative group"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * i }}
@@ -334,7 +334,7 @@ export default function Home() {
               <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-primary/40">
                 <img src={logoImg} alt="Prosto" className="w-full h-full object-cover" />
               </div>
-              <button onClick={() => setMobileMenuOpen(false)} className="text-foreground/80 hover:text-foreground p-2">
+              <button onClick={() => setMobileMenuOpen(false)} className="text-foreground hover:text-foreground p-2">
                 <X size={32} />
               </button>
             </div>
@@ -441,7 +441,7 @@ export default function Home() {
 
             {/* Typewriter slogan */}
             <motion.p variants={fadeUp}
-              className="text-xl md:text-3xl text-foreground/80 font-medium mb-12 max-w-xl min-h-[2em]"
+              className="text-xl md:text-3xl text-foreground font-medium mb-12 max-w-xl min-h-[2em]"
             >
               <TypewriterText text="لأن الجوع إلو بروستو!" delay={1.2} speed={80} />
             </motion.p>
@@ -512,7 +512,7 @@ export default function Home() {
                   <HeartIcon size={22} />
                   <p className="text-primary font-bold text-xl drop-shadow-md">أجواء مميزة</p>
                 </div>
-                <p className="text-foreground/75 text-sm mt-1">مكان يجمع العائلة والأصدقاء</p>
+                <p className="text-foreground text-sm mt-1">مكان يجمع العائلة والأصدقاء</p>
               </motion.div>
               <motion.div
                 className="absolute inset-0 rounded-3xl border border-primary/20 pointer-events-none"
@@ -532,13 +532,13 @@ export default function Home() {
               <h2 className="text-3xl md:text-5xl font-black mb-6 relative z-10 font-display">
                 قصتنا تبدأ من <span className="text-primary">الجودة</span>
               </h2>
-              <p className="text-foreground/60 text-lg leading-relaxed mb-5 relative z-10">
+              <p className="text-foreground text-lg leading-relaxed mb-5 relative z-10">
                 في بروستو، نؤمن بأن الوجبة السريعة لا يجب أن تكون عادية. نحن نختار مكوناتنا بعناية فائقة، من الدجاج الطازج إلى الخضروات اليومية.
               </p>
-              <p className="text-foreground/60 text-lg leading-relaxed mb-8 relative z-10">
+              <p className="text-foreground text-lg leading-relaxed mb-8 relative z-10">
                 مزيجنا السري من البهارات وطريقة التحضير الفريدة تجعل من بروستو الوجهة الأولى لعشاق الطعام في المدينة.
               </p>
-              <motion.div className="flex items-center gap-3 text-foreground/75 font-medium relative z-10"
+              <motion.div className="flex items-center gap-3 text-foreground font-medium relative z-10"
                 whileHover={{ x: -4 }} transition={{ type: "spring", stiffness: 300 }}
               >
                 <MapPin className="text-primary w-5 h-5 shrink-0" />
@@ -567,7 +567,7 @@ export default function Home() {
             <h2 className="text-4xl md:text-6xl font-black mb-3 font-display">
               لحظات من <span className="text-primary">بروستو</span>
             </h2>
-            <p className="text-foreground/40 text-lg">كل صورة تحكي نكهة</p>
+            <p className="text-foreground text-lg">كل صورة تحكي نكهة</p>
           </AnimatedSection>
 
           {/* Filter buttons */}
@@ -578,7 +578,7 @@ export default function Home() {
                 className={`px-5 py-2 rounded-full font-bold text-sm transition-all duration-300 border ${
                   galleryFilter === key
                     ? 'bg-primary text-black border-primary shadow-[0_0_20px_rgba(245,200,0,0.4)]'
-                    : 'bg-transparent text-foreground/60 border-foreground/20 hover:border-primary/50 hover:text-primary'
+                    : 'bg-transparent text-foreground border-foreground/20 hover:border-primary/50 hover:text-primary'
                 }`}
                 whileHover={{ scale: 1.06 }}
                 whileTap={{ scale: 0.94 }}
@@ -653,7 +653,7 @@ export default function Home() {
                   <Utensils className="w-9 h-9" />
                 </div>
                 <div className="text-center">
-                  <p className="text-black/60 text-sm mb-1">جهّز طلبك</p>
+                  <p className="text-black text-sm mb-1">جهّز طلبك</p>
                   <p className="text-2xl font-black">انتقل إلى المنيو</p>
                 </div>
               </a>
@@ -664,7 +664,7 @@ export default function Home() {
                   <Phone className="w-9 h-9 text-primary" />
                 </div>
                 <div className="text-center">
-                  <p className="text-foreground/40 text-sm mb-1">اتصل الآن للطلب</p>
+                  <p className="text-foreground text-sm mb-1">اتصل الآن للطلب</p>
                   <p className="text-3xl md:text-4xl font-black text-foreground tracking-wider font-mono" dir="ltr">
                     {PHONE_NUMBER}
                   </p>
@@ -696,7 +696,7 @@ export default function Home() {
                 <img src={logoImg} alt="Prosto Logo" className="w-full h-full object-cover" />
               </motion.div>
               <span className="text-2xl font-black text-primary mb-3 block">PROSTO | بروستو</span>
-              <p className="text-foreground/45 mb-6 max-w-xs text-sm leading-relaxed">
+              <p className="text-foreground mb-6 max-w-xs text-sm leading-relaxed">
                 لأن الجوع إلو بروستو! أفضل تجربة طعام سريع في دير الزور.
               </p>
               <div className="flex gap-3">
@@ -705,7 +705,7 @@ export default function Home() {
                   { href: "https://www.facebook.com/share/1CiMzSXhdU/", icon: <Facebook size={18} /> },
                 ].map((s, i) => (
                   <motion.a key={i} href={s.href} target="_blank" rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full border border-foreground/10 flex items-center justify-center text-foreground/60 hover:bg-primary hover:text-black hover:border-primary transition-all duration-300"
+                    className="w-10 h-10 rounded-full border border-foreground/10 flex items-center justify-center text-foreground hover:bg-primary hover:text-black hover:border-primary transition-all duration-300"
                     whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.9 }}
                   >
                     {s.icon}
@@ -720,7 +720,7 @@ export default function Home() {
               <ul className="flex flex-col gap-3">
                 {navLinks.map((link, i) => (
                   <motion.li key={link.name} initial={{ opacity: 0, x: 15 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.07 }}>
-                    <a href={link.href} className="text-foreground/45 hover:text-primary transition-colors text-sm">{link.name}</a>
+                    <a href={link.href} className="text-foreground hover:text-primary transition-colors text-sm">{link.name}</a>
                   </motion.li>
                 ))}
               </ul>
@@ -729,7 +729,7 @@ export default function Home() {
             {/* Contact */}
             <div className="flex flex-col items-center md:items-start text-center md:text-right">
               <h4 className="text-lg font-bold text-foreground mb-5">تواصل معنا</h4>
-              <ul className="flex flex-col gap-4 text-foreground/45 text-sm">
+              <ul className="flex flex-col gap-4 text-foreground text-sm">
                 <li className="flex items-start gap-3 justify-center md:justify-start">
                   <MapPin className="text-primary w-4 h-4 shrink-0 mt-0.5" />
                   <span>سوريا - دير الزور - شارع سينما فؤاد - جانب مركز الرشيد</span>
@@ -744,7 +744,7 @@ export default function Home() {
 
           {/* Bottom bar */}
           <div className="border-t border-foreground/8 pt-6 mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-foreground/20 text-[11px]">
+            <p className="text-foreground text-[11px]">
               &copy; {new Date().getFullYear()} PROSTO Restaurant. All rights reserved.
             </p>
             <CoderCredit />

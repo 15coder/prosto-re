@@ -35,7 +35,7 @@ function QuantityControl({
         type="button"
         aria-label="إنقاص الكمية"
         onClick={() => onChange(Math.max(0, quantity - 1))}
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-foreground/15 text-foreground/70 transition-colors hover:border-primary hover:text-primary"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-foreground/15 text-foreground transition-colors hover:border-primary hover:text-primary"
       >
         <Minus className="h-4 w-4" />
       </button>
@@ -79,9 +79,9 @@ function MenuCard({
           <h3 className="text-xl font-black text-foreground">{item.name}</h3>
           <p className="shrink-0 text-base font-black text-primary">{formatSYP(item.price)}</p>
         </div>
-        <p className="mb-5 min-h-12 text-sm leading-6 text-foreground/50">{item.description}</p>
+        <p className="mb-5 min-h-12 text-sm leading-6 text-foreground">{item.description}</p>
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-bold text-foreground/35">اختر الكمية</span>
+          <span className="text-xs font-bold text-foreground">اختر الكمية</span>
           <QuantityControl quantity={quantity} onChange={onQuantityChange} />
         </div>
       </div>
@@ -112,12 +112,12 @@ export default function MenuPage() {
     <main dir="rtl" className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/85 backdrop-blur-2xl">
         <div className="container mx-auto flex items-center justify-between gap-4 px-6 py-4">
-          <a href="/" className="inline-flex items-center gap-3 text-sm font-bold text-foreground/70 transition-colors hover:text-primary">
+          <a href="/" className="inline-flex items-center gap-3 text-sm font-bold text-foreground transition-colors hover:text-primary">
             <ArrowRight className="h-4 w-4" />
             العودة للموقع
           </a>
           <a href="/" className="font-display text-2xl font-black text-primary">PROSTO</a>
-          <a href={`tel:${PHONE_NUMBER}`} className="hidden text-sm text-foreground/50 transition-colors hover:text-primary sm:block">
+          <a href={`tel:${PHONE_NUMBER}`} className="hidden text-sm text-foreground transition-colors hover:text-primary sm:block">
             {PHONE_NUMBER}
           </a>
         </div>
@@ -133,7 +133,7 @@ export default function MenuPage() {
           <h1 className="mb-5 font-display text-5xl font-black md:text-7xl">
             اختار <span className="text-primary">طلبك</span>
           </h1>
-          <p className="mx-auto max-w-xl text-base leading-8 text-foreground/50 md:text-lg">
+          <p className="mx-auto max-w-xl text-base leading-8 text-foreground md:text-lg">
             اطلب وجبتك المفضلة بسهولة، وحدد الكمية ثم انتقل إلى الفاتورة لإرسال طلبك مباشرة عبر واتساب.
           </p>
 
@@ -142,7 +142,7 @@ export default function MenuPage() {
               <a
                 key={category}
                 href={`#${category}`}
-                className="rounded-full border border-foreground/15 px-5 py-2 text-sm font-bold text-foreground/65 transition-colors hover:border-primary hover:text-primary"
+                className="rounded-full border border-foreground/15 px-5 py-2 text-sm font-bold text-foreground transition-colors hover:border-primary hover:text-primary"
               >
                 {category}
               </a>
@@ -161,7 +161,7 @@ export default function MenuPage() {
                   <p className="mb-2 text-xs font-bold tracking-widest text-primary">PROSTO MENU</p>
                   <h2 className="font-display text-3xl font-black md:text-4xl">{category}</h2>
                 </div>
-                <span className="text-sm text-foreground/35">{items.length} أصناف</span>
+                <span className="text-sm text-foreground">{items.length} أصناف</span>
               </div>
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {items.map((item) => (
@@ -185,7 +185,7 @@ export default function MenuPage() {
               <ShoppingBag className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs text-foreground/45">اختيارك الحالي</p>
+              <p className="text-xs text-foreground">اختيارك الحالي</p>
               <p className="font-black text-foreground">
                 {cartCount} {cartCount === 1 ? "وجبة" : "وجبات"} · <span className="text-primary">{formatSYP(cartTotal)}</span>
               </p>

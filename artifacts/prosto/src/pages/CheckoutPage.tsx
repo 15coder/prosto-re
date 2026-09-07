@@ -137,7 +137,7 @@ export default function CheckoutPage() {
         <div className="w-full max-w-lg rounded-3xl border border-foreground/10 bg-white/[0.035] p-8 text-center shadow-2xl">
           <ShoppingBag className="mx-auto mb-5 h-12 w-12 text-primary" />
           <h1 className="mb-3 font-display text-3xl font-black">السلة فارغة</h1>
-          <p className="mb-7 leading-7 text-foreground/50">أضف وجبتك المفضلة من المنيو أولاً، ثم عد إلى صفحة الفاتورة.</p>
+          <p className="mb-7 leading-7 text-foreground">أضف وجبتك المفضلة من المنيو أولاً، ثم عد إلى صفحة الفاتورة.</p>
           <button
             type="button"
             onClick={() => setLocation("/menu")}
@@ -157,13 +157,13 @@ export default function CheckoutPage() {
           <button
             type="button"
             onClick={() => setLocation("/menu")}
-            className="inline-flex items-center gap-2 text-sm font-bold text-foreground/65 transition-colors hover:text-primary"
+            className="inline-flex items-center gap-2 text-sm font-bold text-foreground transition-colors hover:text-primary"
           >
             <ArrowRight className="h-4 w-4" />
             تعديل الطلب
           </button>
           <a href="/" className="font-display text-2xl font-black text-primary">PROSTO</a>
-          <span className="hidden text-sm text-foreground/35 sm:block">الفاتورة النهائية</span>
+          <span className="hidden text-sm text-foreground sm:block">الفاتورة النهائية</span>
         </div>
       </header>
 
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
           <h1 className="font-display text-4xl font-black md:text-6xl">
             تفاصيل <span className="text-primary">طلبك</span>
           </h1>
-          <p className="mt-4 max-w-2xl leading-8 text-foreground/50">
+          <p className="mt-4 max-w-2xl leading-8 text-foreground">
             راجع اختيارك، ثم حدد موقعك ليتم حساب التوصيل بدقة وإرسال الفاتورة كاملة إلى واتساب.
           </p>
         </div>
@@ -187,7 +187,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <h2 className="font-black">الأصناف المختارة</h2>
-                  <p className="text-xs text-foreground/40">{lines.length} أصناف مختلفة</p>
+                    <p className="text-xs text-foreground">{lines.length} أصناف مختلفة</p>
                 </div>
               </div>
               <button
@@ -206,7 +206,7 @@ export default function CheckoutPage() {
                   <img src={line.image} alt={line.name} className="h-16 w-16 shrink-0 rounded-xl object-cover sm:h-20 sm:w-20" />
                   <div className="min-w-0 flex-1">
                     <h3 className="truncate font-black">{line.name}</h3>
-                    <p className="mt-1 text-xs text-foreground/40">{formatSYP(line.price)} للقطعة</p>
+                    <p className="mt-1 text-xs text-foreground">{formatSYP(line.price)} للقطعة</p>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-2">
                     <p className="font-black text-primary">{formatSYP(line.lineTotal)}</p>
@@ -224,7 +224,7 @@ export default function CheckoutPage() {
                         type="button"
                         aria-label={`إنقاص ${line.name}`}
                         onClick={() => updateQuantity(line.id, line.quantity - 1)}
-                        className="flex h-7 w-7 items-center justify-center rounded-full border border-foreground/15 text-foreground/70"
+                        className="flex h-7 w-7 items-center justify-center rounded-full border border-foreground/15 text-foreground"
                       >
                         <Minus className="h-3.5 w-3.5" />
                       </button>
@@ -243,7 +243,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <h2 className="font-black">حدد موقع التوصيل</h2>
-                  <p className="mt-1 text-sm leading-6 text-foreground/50">سنحسب المسافة من المطعم ونضيف 1,000 ليرة عن كل كيلومتر.</p>
+                  <p className="mt-1 text-sm leading-6 text-foreground">سنحسب المسافة من المطعم ونضيف 1,000 ليرة عن كل كيلومتر.</p>
                 </div>
               </div>
 
@@ -271,11 +271,11 @@ export default function CheckoutPage() {
               {locationStatus === "success" && distance !== null && deliveryFee !== null && (
                 <div className="mt-4 rounded-2xl border border-primary/20 bg-black/15 p-4">
                   <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="text-foreground/50">المسافة المحسوبة</span>
+                    <span className="text-foreground">المسافة المحسوبة</span>
                     <strong className="text-primary">{formatDistance(distance)}</strong>
                   </div>
                   <div className="mt-2 flex items-center justify-between gap-3 text-sm">
-                    <span className="text-foreground/50">المسافة المحاسبية</span>
+                    <span className="text-foreground">المسافة المحاسبية</span>
                     <strong>{billableKilometers} كم × {formatSYP(DELIVERY_RATE_PER_KM)}</strong>
                   </div>
                 </div>
@@ -292,17 +292,17 @@ export default function CheckoutPage() {
             <section className="rounded-3xl border border-foreground/10 bg-white/[0.035] p-5 shadow-2xl md:p-7">
               <h2 className="mb-5 font-black">ملخص الفاتورة</h2>
               <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between gap-3 text-foreground/55">
+                <div className="flex items-center justify-between gap-3 text-foreground">
                   <span>مجموع الوجبات</span>
                   <strong className="text-foreground">{formatSYP(subtotal)}</strong>
                 </div>
-                <div className="flex items-center justify-between gap-3 text-foreground/55">
+                <div className="flex items-center justify-between gap-3 text-foreground">
                   <span>سعر التوصيل</span>
                   <strong className="text-foreground">{deliveryFee === null ? "حدد موقعك" : formatSYP(deliveryFee)}</strong>
                 </div>
                 <div className="my-4 border-t border-foreground/10" />
                 <div className="flex items-end justify-between gap-3">
-                  <span className="font-bold text-foreground/65">المجموع الكلي</span>
+                  <span className="font-bold text-foreground">المجموع الكلي</span>
                   <strong className="text-2xl font-black text-primary">{formatSYP(total)}</strong>
                 </div>
               </div>
@@ -316,7 +316,7 @@ export default function CheckoutPage() {
                 <MessageCircle className="h-5 w-5" />
                 اطلب الآن عبر واتساب
               </button>
-              <p className="mt-3 text-center text-[11px] leading-5 text-foreground/35">
+              <p className="mt-3 text-center text-[11px] leading-5 text-foreground">
                 بعد الضغط ستفتح محادثة واتساب برسالة تحتوي الأصناف والمجموع والموقع.
               </p>
             </section>

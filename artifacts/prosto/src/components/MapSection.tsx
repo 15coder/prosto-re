@@ -93,7 +93,7 @@ export default function MapSection() {
           <h2 className="text-4xl md:text-6xl font-black font-display mb-3">
             تعرف على <span className="text-primary">طريقك</span>
           </h2>
-          <p className="text-white/45 text-base">سوريا · دير الزور · شارع سينما فؤاد · جانب مركز الرشيد</p>
+          <p className="text-white text-base">سوريا · دير الزور · شارع سينما فؤاد · جانب مركز الرشيد</p>
         </motion.div>
 
         {/* Map card */}
@@ -125,10 +125,10 @@ export default function MapSection() {
                 <MapPin className="w-4 h-4 text-primary" />
               </div>
               <div>
-                <p className="text-white/85 text-sm font-medium leading-snug">
+                <p className="text-white text-sm font-medium leading-snug">
                   شارع سينما فؤاد، جانب مركز الرشيد
                 </p>
-                <p className="text-white/35 text-xs mt-0.5">دير الزور · سوريا</p>
+                <p className="text-white text-xs mt-0.5">دير الزور · سوريا</p>
               </div>
             </div>
 
