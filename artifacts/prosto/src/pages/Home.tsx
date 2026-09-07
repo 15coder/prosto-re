@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import MapSection from '@/components/MapSection';
 import ReadingProgress from '@/components/ReadingProgress';
-import FloatingSidebar from '@/components/FloatingSidebar';
 import TypewriterText from '@/components/TypewriterText';
 import WavyDivider from '@/components/WavyDivider';
 import { HeartIcon } from '@/components/AnimatedIcons';
@@ -266,7 +265,6 @@ export default function Home() {
 
       {/* ─── Global overlays ─── */}
       <ReadingProgress />
-      <FloatingSidebar />
 
       {/* ─── NAVBAR ─── */}
       <motion.nav
