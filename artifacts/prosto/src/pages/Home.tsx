@@ -1,19 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  motion, useScroll, useTransform, AnimatePresence,
-  useInView, useMotionValue, useSpring, LayoutGroup,
+  motion, useScroll, AnimatePresence,
+  useInView, LayoutGroup,
 } from 'framer-motion';
 import {
   MapPin, Phone, Instagram, Facebook, Menu, X,
-  ArrowLeft, ExternalLink, Code2, ArrowDown, Utensils,
+  ExternalLink, Code2, ArrowDown, Utensils,
 } from 'lucide-react';
-import Stack from '@/components/Stack';
 import MapSection from '@/components/MapSection';
 import ReadingProgress from '@/components/ReadingProgress';
 import FloatingSidebar from '@/components/FloatingSidebar';
 import TypewriterText from '@/components/TypewriterText';
 import WavyDivider from '@/components/WavyDivider';
-import { HeartIcon, FlameIcon } from '@/components/AnimatedIcons';
+import { HeartIcon } from '@/components/AnimatedIcons';
 
 // ─── Images ─────────────────────────────────────────────────────────────────
 import logoImg  from "@assets/prosto_restaurant.2026_20260802_103738_853_1785659367070.jpg";
@@ -89,7 +88,7 @@ function AnimatedSection({ children, className = "", delay = 0, style }: {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   return (
-    <motion.div ref={ref} className={`${className} will-change-transform`} style={style}
+    <motion.div ref={ref} className={className} style={style}
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}
@@ -99,33 +98,15 @@ function AnimatedSection({ children, className = "", delay = 0, style }: {
   );
 }
 
-function useMagnet(strength = 30) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 300, damping: 25 });
-  const sy = useSpring(y, { stiffness: 300, damping: 25 });
-  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    x.set((e.clientX - rect.left - rect.width  / 2) * (strength / 100));
-    y.set((e.clientY - rect.top  - rect.height / 2) * (strength / 100));
-  };
-  const handleLeave = () => { x.set(0); y.set(0); };
-  return { sx, sy, handleMove, handleLeave };
-}
-
-/** Per-section parallax background image */
-function ParallaxBg({ src, speed = 60, opacity = 0.35 }: {
-  src: string; speed?: number; opacity?: number;
+/** Lightweight section background image. It stays static during scroll to avoid
+ * several independent scroll-linked animations competing for the main thread. */
+function SectionBackground({ src, opacity = 0.35 }: {
+  src: string; opacity?: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [-speed, speed]);
   return (
-    <motion.div ref={ref} className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      <motion.img src={src} alt="" className="absolute inset-0 w-full h-full object-cover"
-        style={{ y, opacity, scale: 1.2, willChange: 'transform' }}
-      />
-    </motion.div>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
+      <img src={src} alt="" className="absolute inset-0 w-full h-full object-cover scale-110" style={{ opacity }} />
+    </div>
   );
 }
 
@@ -260,12 +241,14 @@ export default function Home() {
     return unsub;
   }, [scrollY]);
 
-  // Hero parallax
-  const heroY       = useTransform(scrollY, [0, 900],  [0, 260]);
-  const heroOpacity = useTransform(scrollY, [0, 700],  [1, 0]);
-  const heroScale   = useTransform(scrollY, [0, 700],  [1, 1.1]);
-
-  const ctaMagnet = useMagnet(40);
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileMenuOpen]);
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -289,7 +272,7 @@ export default function Home() {
       <motion.nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
-            ? "bg-background/85 backdrop-blur-2xl border-b border-border/40 shadow-2xl py-3"
+            ? "bg-background/95 border-b border-border/40 shadow-xl py-3"
             : "bg-transparent py-5"
         }`}
         initial={{ y: -80 }}
@@ -345,7 +328,7 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[100] bg-background/97 backdrop-blur-3xl flex flex-col p-8"
+            className="fixed inset-0 z-[100] bg-background flex flex-col p-8"
           >
             <div className="flex justify-between items-center mb-12">
               <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-primary/40">
@@ -384,38 +367,39 @@ export default function Home() {
       {/* ─── HERO ─── */}
       <section id="hero" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
         {/* Parallax background */}
-        <motion.div className="absolute inset-0 z-0" style={{ y: heroY }}>
+        <div className="absolute inset-0 z-0">
           {/* Day/Night overlays */}
           <motion.div
             className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/55 to-background/20"
             animate={{ opacity: 1 }} transition={{ duration: 0.7 }}
           />
           <motion.div className="absolute inset-0 z-10 bg-gradient-to-r from-background/70 via-transparent to-background/70" />
-          <motion.img
+          <img
             src={img1} alt="Prosto Food"
             className="w-full h-full object-cover"
-            style={{ scale: heroScale, opacity: 0.42 }}
+            style={{ opacity: 0.42 }}
           />
-        </motion.div>
+        </div>
 
         {/* Golden particles */}
         <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
-          {Array.from({ length: 25 }).map((_, i) => (
+          {Array.from({ length: 10 }).map((_, i) => (
             <motion.div key={i}
               className="absolute rounded-full bg-primary"
               style={{
                 width: 3 + (i % 5),
                 height: 3 + (i % 5),
                 left: `${(i * 4.1) % 100}%`,
-                boxShadow: "0 0 8px rgba(245,200,0,0.7)",
+                boxShadow: "0 0 6px rgba(245,200,0,0.55)",
                 opacity: 0.9,
+                willChange: "transform, opacity",
               }}
               initial={{ y: "110vh", opacity: 0 }}
               animate={{ y: "-10vh", opacity: [0, 0.9, 0.9, 0] }}
               transition={{
-                duration: 6 + (i % 8),
+                duration: 18 + (i % 8) * 1.5,
                 repeat: Infinity,
-                delay: (i * 0.35) % 8,
+                delay: (i * 1.1) % 14,
                 ease: "linear",
               }}
             />
@@ -465,22 +449,17 @@ export default function Home() {
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <motion.a
                 href="#about"
-                className="group relative inline-flex items-center justify-center gap-3 border border-foreground/25 text-foreground px-8 py-4 rounded-full font-bold text-lg overflow-hidden transition-colors hover:border-primary hover:text-primary"
-                style={{ x: ctaMagnet.sx, y: ctaMagnet.sy }}
-                onMouseMove={ctaMagnet.handleMove}
-                onMouseLeave={ctaMagnet.handleLeave}
-                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+                className="group inline-flex w-full sm:w-auto min-w-[190px] items-center justify-center gap-3 border border-foreground/25 text-foreground px-8 py-4 rounded-full font-bold text-lg overflow-hidden transition-colors hover:border-primary hover:text-primary hover:-translate-y-0.5 active:translate-y-0"
               >
                 <ArrowDown className="w-5 h-5" />
                 <span>تصفح الموقع</span>
               </motion.a>
               <motion.a
                 href="/menu"
-                className="inline-flex items-center justify-center gap-3 bg-primary text-black px-8 py-4 rounded-full font-black text-lg shadow-[0_0_35px_rgba(245,200,0,0.35)] hover:shadow-[0_0_60px_rgba(245,200,0,0.55)] transition-shadow"
-                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+                className="inline-flex w-full sm:w-auto min-w-[190px] items-center justify-center gap-3 bg-primary text-black px-8 py-4 rounded-full font-black text-lg shadow-[0_0_25px_rgba(245,200,0,0.28)] hover:shadow-[0_0_40px_rgba(245,200,0,0.45)] transition-shadow hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Utensils className="w-5 h-5" />
-                <span>عرض الـ menu</span>
+                <span>عرض المنيو</span>
               </motion.a>
             </motion.div>
           </motion.div>
@@ -497,68 +476,10 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ─── STACK SHOWCASE ─── */}
-      <section className="py-32 relative overflow-hidden min-h-[100dvh] flex items-center">
-        {/* Subtle parallax bg */}
-        <ParallaxBg src={img6} speed={40} opacity={0.06} />
-
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(245,200,0,0.07) 0%, transparent 70%)" }}
-          animate={{ scale: [1, 1.15, 1] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        <div className="container px-6 mx-auto relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24">
-            <AnimatedSection className="max-w-xl text-center lg:text-right" delay={0}>
-              <div className="flex items-center gap-2 justify-center lg:justify-end mb-4">
-                <FlameIcon size={26} />
-                <span className="text-primary text-sm font-bold tracking-widest uppercase">نكهات لا تُقاوَم</span>
-              </div>
-              <motion.h3 className="text-4xl md:text-5xl font-black mb-6 leading-tight font-display">
-                أكثر من وجبة —{" "}
-                <motion.span className="text-primary inline-block">
-                  تجربة
-                </motion.span>
-              </motion.h3>
-              <p className="text-lg text-foreground/60 leading-relaxed">
-                نحن لا نقدم الطعام فقط، بل نقدم تجربة فريدة تداعب الحواس. دجاج مقرمش ذهبي، برغر مليء بالعصارة، وشاورما محضرة بشغف.
-              </p>
-            </AnimatedSection>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.75, rotate: -8 }}
-              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-              className="w-full max-w-[360px] h-[460px] will-change-transform"
-            >
-              <Stack randomRotation sensitivity={180} sendToBackOnClick autoplay autoplayDelay={2600} pauseOnHover
-                animationConfig={{ stiffness: 180, damping: 26 }}
-                cards={[
-                  <img key="1" src={img1} alt="Platter" className="w-full h-full object-cover pointer-events-none" />,
-                  <img key="2" src={img2} alt="Shawarma" className="w-full h-full object-cover pointer-events-none" />,
-                  <img key="3" src={img3} alt="Burger" className="w-full h-full object-cover pointer-events-none" />,
-                  <img key="4" src={img4} alt="Crispy Chicken" className="w-full h-full object-cover pointer-events-none" />,
-                ]}
-              />
-              <motion.p className="text-center mt-5 text-foreground/35 text-sm flex items-center justify-center gap-2"
-                animate={{ opacity: [0.4, 0.8, 0.4] }}
-                transition={{ duration: 2.5, repeat: Infinity }}
-              >
-                <ArrowLeft className="w-4 h-4" />
-                اسحب البطاقة لتكتشف المزيد
-              </motion.p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* ─── ABOUT ─── */}
       <section id="about" className="py-24 relative overflow-hidden min-h-[100dvh] flex items-center">
         {/* Parallax bg for this section */}
-        <ParallaxBg src={img9} speed={50} opacity={0.05} />
+        <SectionBackground src={img9} opacity={0.05} />
 
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/[0.015] to-transparent pointer-events-none" />
 
@@ -630,7 +551,7 @@ export default function Home() {
 
       {/* ─── GALLERY (with filter + reorder) ─── */}
       <section id="gallery" className="py-24 relative overflow-hidden min-h-[100dvh] flex items-center">
-        <ParallaxBg src={img14} speed={35} opacity={0.05} />
+        <SectionBackground src={img14} opacity={0.05} />
 
         <div
           className="absolute inset-0 pointer-events-none"
@@ -678,12 +599,11 @@ export default function Home() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.85 }}
                     transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1], delay: i * 0.02 }}
-                    className="group relative rounded-2xl overflow-hidden aspect-square will-change-transform"
+                    className="group relative rounded-2xl overflow-hidden aspect-square"
                     whileHover={{ scale: 1.04, zIndex: 20 }}
                   >
                     <img src={item.src} alt={item.label}
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-                      style={{ willChange: 'transform' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                     <motion.div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-400 mix-blend-overlay" />
@@ -706,14 +626,14 @@ export default function Home() {
 
       {/* ─── DELIVERY CTA ─── */}
       <section className="relative py-32 overflow-hidden border-y border-primary/15 min-h-[100dvh] flex items-center">
-        <ParallaxBg src={img18} speed={50} opacity={0.08} />
+        <SectionBackground src={img18} opacity={0.08} />
 
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(245,200,0,0.1) 0%, transparent 70%)" }}
         />
 
-        <div className="container relative z-10 px-6 text-center max-w-3xl mx-auto">
+        <div className="container relative z-10 px-6 text-center max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -725,22 +645,32 @@ export default function Home() {
             </motion.h2>
             <p className="text-xl md:text-2xl text-primary font-medium mb-10">لباب بيتك، ساخن ومقرمش كما تحب!</p>
 
-            <motion.a href={`tel:${PHONE_NUMBER}`}
-              className="group flex flex-col md:flex-row items-center justify-center gap-6 border border-foreground/10 hover:border-primary/40 backdrop-blur-xl p-8 rounded-3xl transition-all duration-400"
-              style={{ background: 'rgba(255,255,255,0.04)' }}
-              whileHover={{ scale: 1.02, boxShadow: "0 0 60px rgba(245,200,0,0.2)" }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <motion.div className="bg-primary/20 p-4 rounded-full">
-                <Phone className="w-10 h-10 text-primary" />
-              </motion.div>
-              <div className="text-center md:text-right">
-                <p className="text-foreground/40 text-sm mb-1">اتصل الآن للطلب</p>
-                <p className="text-4xl md:text-5xl font-black text-foreground tracking-wider font-mono" dir="ltr">
-                  {PHONE_NUMBER}
-                </p>
-              </div>
-            </motion.a>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-right">
+              <a href="/menu"
+                className="group flex min-h-[170px] flex-col items-center justify-center gap-4 border border-primary/35 bg-primary text-black p-8 rounded-3xl transition-transform duration-200 hover:-translate-y-1 active:translate-y-0"
+              >
+                <div className="bg-black/10 p-4 rounded-full">
+                  <Utensils className="w-9 h-9" />
+                </div>
+                <div className="text-center">
+                  <p className="text-black/60 text-sm mb-1">جهّز طلبك</p>
+                  <p className="text-2xl font-black">انتقل إلى المنيو</p>
+                </div>
+              </a>
+              <a href={`tel:${PHONE_NUMBER}`}
+                className="group flex min-h-[170px] flex-col items-center justify-center gap-4 border border-foreground/10 hover:border-primary/40 bg-black/25 p-8 rounded-3xl transition-transform duration-200 hover:-translate-y-1 active:translate-y-0"
+              >
+                <div className="bg-primary/20 p-4 rounded-full">
+                  <Phone className="w-9 h-9 text-primary" />
+                </div>
+                <div className="text-center">
+                  <p className="text-foreground/40 text-sm mb-1">اتصل الآن للطلب</p>
+                  <p className="text-3xl md:text-4xl font-black text-foreground tracking-wider font-mono" dir="ltr">
+                    {PHONE_NUMBER}
+                  </p>
+                </div>
+              </a>
+            </div>
           </motion.div>
         </div>
       </section>
